@@ -1,0 +1,16 @@
+{
+  "name": "aclad-latam",
+  "owner": {
+    "name": "Alliances and Channels, Oracle NetSuite LATAM"
+  },
+  "plugins": [
+    {
+      "name": "aclad-prospecting",
+      "source": "./plugins/aclad-prospecting",
+      "description": "Prospecção para parceiros NetSuite com pesquisa, ICPs revisados, conexões assistidas e acompanhamento privado."
+    }
+  ],
+  "metadata": {
+    "description": "Assistente de prospecção para parceiros NetSuite, com contexto privado por vendedor."
+  }
+}

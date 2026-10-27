@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "research-hypothesis-of-need",
+      "source_file": "Partner Resource Center/Engage Customers/Prospect/Prospecting Quick Guide.pdf",
+      "source_page": 39,
+      "source_date": null,
+      "reviewed_at": "2026-10-22T12:00:00Z",
+      "stage": "briefing",
+      "industry": null,
+      "persona": null,
+      "audience": "partner",
+      "status": "approved",
+      "rule": "Combine dated company research and industry context to propose a hypothesis of need. Clearly label the hypothesis and ask questions that can validate it; do not describe the inferred pain as a fact about the company.",
+      "valid_until": null
+    },
+    {
+      "id": "contextualized-outreach",
+      "source_file": "Partner Resource Center/Engage Customers/Prospect/Prospecting Quick Guide.pdf",
+      "source_page": 41,
+      "source_date": null,
+      "reviewed_at": "2026-10-22T12:00:00Z",
+      "stage": "outreach",
+      "industry": null,
+      "persona": null,
+      "audience": "partner",
+      "status": "approved",
+      "rule": "Relate the opening to the recipient's role and researched business context. Cite only authorized customer evidence and never claim personal experience or a prior relationship that the seller has not established.",
+      "valid_until": null
+    }
+  ]
+}

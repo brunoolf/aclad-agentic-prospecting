@@ -1,0 +1,20 @@
+# Local originals, private data and generated files
+.local/
+.superpowers/
+.DS_Store
+__pycache__/
+*.pyc
+*.zip
+*.sqlite
+*.sqlite-*
+*.db
+*.bak
+*.xlsx
+*.xls
+*.csv
+.env
+.env.*
+.mcp.json
+**/.aclad/
+**/contexto/
+**/config/partner.json

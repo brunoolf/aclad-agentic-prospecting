@@ -1,0 +1,18 @@
+{
+  "name": "aclad-prospecting",
+  "description": "Prospecção para parceiros NetSuite com pesquisa, ICPs revisados, conexões assistidas e acompanhamento privado.",
+  "version": "0.4.1",
+  "author": {
+    "name": "Alliances and Channels, Oracle NetSuite LATAM"
+  },
+  "keywords": [
+    "sales",
+    "prospecting",
+    "crm",
+    "netsuite",
+    "latam"
+  ],
+  "license": "MIT",
+  "hooks": "./hooks/claude.json",
+  "icon": "./assets/icon-light.png"
+}

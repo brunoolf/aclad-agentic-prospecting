@@ -1,0 +1,207 @@
+[
+  {
+    "ref": {
+      "provider": "crm-demo",
+      "tenant_id": "tenant-demo",
+      "connection_id": "connection-demo",
+      "object_id": "customer-own"
+    },
+    "owner_ref": {
+      "provider": "crm-demo",
+      "tenant_id": "tenant-demo",
+      "connection_id": "connection-demo",
+      "object_id": "seller-a"
+    },
+    "is_customer": true,
+    "is_worked": true,
+    "country": "BR",
+    "state": "SP",
+    "industry": "manufacturing",
+    "subindustry": null,
+    "employees": 100,
+    "annual_revenue": {
+      "amount": "1000000.50",
+      "currency": "BRL",
+      "year": 2025
+    },
+    "deal_value": {
+      "amount": "9999",
+      "currency": "BRL",
+      "year": 2025
+    },
+    "solutions": [
+      "ERP"
+    ],
+    "source_at": "2026-10-22T12:00:00Z"
+  },
+  {
+    "ref": {
+      "provider": "crm-demo",
+      "tenant_id": "tenant-demo",
+      "connection_id": "connection-demo",
+      "object_id": "customer-own"
+    },
+    "owner_ref": {
+      "provider": "crm-demo",
+      "tenant_id": "tenant-demo",
+      "connection_id": "connection-demo",
+      "object_id": "seller-a"
+    },
+    "is_customer": true,
+    "is_worked": true,
+    "country": "BR",
+    "state": "SP",
+    "industry": "manufacturing",
+    "subindustry": null,
+    "employees": 100,
+    "annual_revenue": {
+      "amount": "1000000.50",
+      "currency": "BRL",
+      "year": 2025
+    },
+    "deal_value": {
+      "amount": "9999",
+      "currency": "BRL",
+      "year": 2025
+    },
+    "solutions": [
+      "ERP"
+    ],
+    "source_at": "2026-10-22T12:00:00Z",
+    "opportunity_id": "second-deal"
+  },
+  {
+    "ref": {
+      "provider": "crm-demo",
+      "tenant_id": "tenant-demo",
+      "connection_id": "connection-demo",
+      "object_id": "customer-other"
+    },
+    "owner_ref": {
+      "provider": "crm-demo",
+      "tenant_id": "tenant-demo",
+      "connection_id": "connection-demo",
+      "object_id": "seller-b"
+    },
+    "is_customer": true,
+    "is_worked": true,
+    "country": "US",
+    "state": null,
+    "industry": "manufacturing",
+    "subindustry": null,
+    "employees": null,
+    "annual_revenue": {
+      "amount": "2500000.25",
+      "currency": "USD",
+      "year": 2026
+    },
+    "deal_value": {
+      "amount": "9999",
+      "currency": "BRL",
+      "year": 2025
+    },
+    "solutions": [
+      "ERP"
+    ],
+    "source_at": "2026-10-22T12:00:00Z"
+  },
+  {
+    "ref": {
+      "provider": "crm-demo",
+      "tenant_id": "tenant-demo",
+      "connection_id": "connection-demo",
+      "object_id": "prospect-own"
+    },
+    "owner_ref": {
+      "provider": "crm-demo",
+      "tenant_id": "tenant-demo",
+      "connection_id": "connection-demo",
+      "object_id": "seller-a"
+    },
+    "is_customer": false,
+    "is_worked": true,
+    "country": "BR",
+    "state": "SP",
+    "industry": "manufacturing",
+    "subindustry": null,
+    "employees": 100,
+    "annual_revenue": null,
+    "deal_value": {
+      "amount": "9999",
+      "currency": "BRL",
+      "year": 2025
+    },
+    "solutions": [],
+    "source_at": "2026-10-22T12:00:00Z"
+  },
+  {
+    "ref": {
+      "provider": "crm-demo",
+      "tenant_id": "tenant-demo",
+      "connection_id": "connection-demo",
+      "object_id": "prospect-other"
+    },
+    "owner_ref": {
+      "provider": "crm-demo",
+      "tenant_id": "tenant-demo",
+      "connection_id": "connection-demo",
+      "object_id": "seller-b"
+    },
+    "is_customer": false,
+    "is_worked": true,
+    "country": "BR",
+    "state": "SP",
+    "industry": "manufacturing",
+    "subindustry": null,
+    "employees": 100,
+    "annual_revenue": {
+      "amount": "1000000.50",
+      "currency": "BRL",
+      "year": 2025
+    },
+    "deal_value": {
+      "amount": "9999",
+      "currency": "BRL",
+      "year": 2025
+    },
+    "solutions": [
+      "ERP"
+    ],
+    "source_at": "2026-10-22T12:00:00Z"
+  },
+  {
+    "ref": {
+      "provider": "crm-demo",
+      "tenant_id": "tenant-demo",
+      "connection_id": "connection-demo",
+      "object_id": "unknown-own"
+    },
+    "owner_ref": {
+      "provider": "crm-demo",
+      "tenant_id": "tenant-demo",
+      "connection_id": "connection-demo",
+      "object_id": "seller-a"
+    },
+    "is_customer": null,
+    "is_worked": true,
+    "country": "BR",
+    "state": "SP",
+    "industry": "manufacturing",
+    "subindustry": null,
+    "employees": 100,
+    "annual_revenue": {
+      "amount": "1000000.50",
+      "currency": "BRL",
+      "year": 2025
+    },
+    "deal_value": {
+      "amount": "9999",
+      "currency": "BRL",
+      "year": 2025
+    },
+    "solutions": [
+      "ERP"
+    ],
+    "source_at": "2026-10-22T12:00:00Z"
+  }
+]

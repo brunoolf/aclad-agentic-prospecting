@@ -1,0 +1,269 @@
+[
+  {
+    "provider": "netsuite",
+    "surface": "requires-current-host-discovery",
+    "operations": [
+      "crm.read",
+      "crm.write"
+    ],
+    "operation_status": "requested-not-provider-verified",
+    "installation_kind": "remote-mcp",
+    "live_validation": "not_executed",
+    "official_url": "https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_3200541651.html",
+    "checked_at": "2026-10-22",
+    "documentation_status": "official-source-reviewed",
+    "support_level": "documentation_only",
+    "host_paths": {
+      "codex": "Descobrir a conexão no catálogo nativo do aplicativo; confirmar suporte a MCP remoto e autenticação neste host.",
+      "claude": "Descobrir o conector nativo ou MCP nas configurações do aplicativo; confirmar permissões da organização."
+    }
+  },
+  {
+    "provider": "hubspot",
+    "surface": "requires-current-host-discovery",
+    "operations": [
+      "crm.read",
+      "crm.write"
+    ],
+    "operation_status": "requested-not-provider-verified",
+    "installation_kind": "remote-mcp",
+    "live_validation": "not_executed",
+    "official_url": "https://developers.hubspot.com/ai-tools",
+    "checked_at": "2026-10-22",
+    "documentation_status": "official-source-reviewed",
+    "support_level": "documentation_only",
+    "host_paths": {
+      "codex": "Descobrir a conexão no catálogo nativo do aplicativo; confirmar suporte a MCP remoto e autenticação neste host.",
+      "claude": "Descobrir o conector nativo ou MCP nas configurações do aplicativo; confirmar permissões da organização."
+    }
+  },
+  {
+    "provider": "pipedrive",
+    "surface": "requires-current-host-discovery",
+    "operations": [
+      "crm.read",
+      "crm.write"
+    ],
+    "operation_status": "requested-not-provider-verified",
+    "installation_kind": "unknown",
+    "live_validation": "not_executed",
+    "documentation_status": "source-content-not-verified",
+    "support_level": "recognized_only",
+    "host_paths": {
+      "codex": "Descobrir a conexão no catálogo nativo do aplicativo; confirmar suporte a MCP remoto e autenticação neste host.",
+      "claude": "Descobrir o conector nativo ou MCP nas configurações do aplicativo; confirmar permissões da organização."
+    }
+  },
+  {
+    "provider": "apollo",
+    "surface": "requires-current-host-discovery",
+    "operations": [
+      "accounts.search",
+      "companies.enrich",
+      "people.search",
+      "people.reveal_email"
+    ],
+    "operation_status": "requested-not-provider-verified",
+    "installation_kind": "remote-mcp-or-native",
+    "live_validation": "not_executed",
+    "official_url": "https://docs.apollo.io/docs/apollo-mcp",
+    "checked_at": "2026-10-22",
+    "documentation_status": "official-source-reviewed",
+    "support_level": "documentation_only",
+    "host_paths": {
+      "codex": "Descobrir a conexão no catálogo nativo do aplicativo; confirmar suporte a MCP remoto e autenticação neste host.",
+      "claude": "Descobrir o conector nativo ou MCP nas configurações do aplicativo; confirmar permissões da organização."
+    }
+  },
+  {
+    "provider": "lusha",
+    "surface": "requires-current-host-discovery",
+    "operations": [
+      "accounts.search",
+      "companies.enrich",
+      "people.search",
+      "people.reveal_email"
+    ],
+    "operation_status": "requested-not-provider-verified",
+    "installation_kind": "remote-mcp-or-native",
+    "live_validation": "not_executed",
+    "official_url": "https://www.lusha.com/campus/ai-connectors/",
+    "checked_at": "2026-10-22",
+    "documentation_status": "official-source-reviewed",
+    "support_level": "documentation_only",
+    "host_paths": {
+      "codex": "Descobrir a conexão no catálogo nativo do aplicativo; confirmar suporte a MCP remoto e autenticação neste host.",
+      "claude": "Descobrir o conector nativo ou MCP nas configurações do aplicativo; confirmar permissões da organização."
+    }
+  },
+  {
+    "provider": "zoominfo",
+    "surface": "requires-current-host-discovery",
+    "operations": [
+      "accounts.search",
+      "companies.enrich",
+      "people.search",
+      "people.reveal_email"
+    ],
+    "operation_status": "requested-not-provider-verified",
+    "installation_kind": "remote-mcp",
+    "live_validation": "not_executed",
+    "official_url": "https://github.com/Zoominfo/zoominfo-mcp-plugin",
+    "checked_at": "2026-10-22",
+    "documentation_status": "official-source-reviewed",
+    "support_level": "documentation_only",
+    "host_paths": {
+      "codex": "Descobrir a conexão no catálogo nativo do aplicativo; confirmar suporte a MCP remoto e autenticação neste host.",
+      "claude": "Descobrir o conector nativo ou MCP nas configurações do aplicativo; confirmar permissões da organização."
+    }
+  },
+  {
+    "provider": "outlook",
+    "surface": "requires-current-host-discovery",
+    "operations": [
+      "email.read",
+      "email.create_draft",
+      "email.send",
+      "calendar.read"
+    ],
+    "operation_status": "requested-not-provider-verified",
+    "installation_kind": "native-platform",
+    "live_validation": "not_executed",
+    "official_url": "https://support.claude.com/en/articles/15183774-connect-to-microsoft-365",
+    "checked_at": "2026-10-22",
+    "documentation_status": "official-source-reviewed",
+    "support_level": "documentation_only",
+    "host_paths": {
+      "codex": "Descobrir a conexão no catálogo nativo do aplicativo; confirmar suporte a MCP remoto e autenticação neste host.",
+      "claude": "Descobrir o conector nativo ou MCP nas configurações do aplicativo; confirmar permissões da organização."
+    }
+  },
+  {
+    "provider": "gmail",
+    "surface": "requires-current-host-discovery",
+    "operations": [
+      "email.read",
+      "email.create_draft",
+      "email.send"
+    ],
+    "operation_status": "requested-not-provider-verified",
+    "installation_kind": "native-platform",
+    "live_validation": "not_executed",
+    "official_url": "https://support.claude.com/en/articles/10166901-use-google-workspace-connectors",
+    "checked_at": "2026-10-22",
+    "documentation_status": "official-source-reviewed",
+    "support_level": "documentation_only",
+    "host_paths": {
+      "codex": "Descobrir a conexão no catálogo nativo do aplicativo; confirmar suporte a MCP remoto e autenticação neste host.",
+      "claude": "Descobrir o conector nativo ou MCP nas configurações do aplicativo; confirmar permissões da organização."
+    }
+  },
+  {
+    "provider": "google-calendar",
+    "surface": "requires-current-host-discovery",
+    "operations": [
+      "calendar.read"
+    ],
+    "operation_status": "requested-not-provider-verified",
+    "installation_kind": "native-platform",
+    "live_validation": "not_executed",
+    "official_url": "https://support.claude.com/en/articles/10166901-use-google-workspace-connectors",
+    "checked_at": "2026-10-22",
+    "documentation_status": "official-source-reviewed",
+    "support_level": "documentation_only",
+    "host_paths": {
+      "codex": "Descobrir a conexão no catálogo nativo do aplicativo; confirmar suporte a MCP remoto e autenticação neste host.",
+      "claude": "Descobrir o conector nativo ou MCP nas configurações do aplicativo; confirmar permissões da organização."
+    }
+  },
+  {
+    "provider": "outlook-calendar",
+    "surface": "requires-current-host-discovery",
+    "operations": [
+      "calendar.read"
+    ],
+    "operation_status": "requested-not-provider-verified",
+    "installation_kind": "native-platform",
+    "live_validation": "not_executed",
+    "official_url": "https://support.claude.com/en/articles/15183774-connect-to-microsoft-365",
+    "checked_at": "2026-10-22",
+    "documentation_status": "official-source-reviewed",
+    "support_level": "documentation_only",
+    "host_paths": {
+      "codex": "Descobrir a conexão no catálogo nativo do aplicativo; confirmar suporte a MCP remoto e autenticação neste host.",
+      "claude": "Descobrir o conector nativo ou MCP nas configurações do aplicativo; confirmar permissões da organização."
+    }
+  },
+  {
+    "provider": "monday",
+    "operations": [
+      "crm.read",
+      "crm.write"
+    ],
+    "installation_kind": "remote-mcp",
+    "official_url": "https://support.monday.com/hc/en-us/articles/28515034903314-Get-started-with-monday-MCP",
+    "checked_at": "2026-10-26",
+    "documentation_status": "official-source-reviewed",
+    "support_level": "documentation_only",
+    "host_paths": {
+      "codex": "Consultar catálogo nativo e suporte do host a MCP remoto; autenticar no fluxo nativo disponível.",
+      "claude": "Adicionar monday MCP no caminho de conectores aceito pelo host, consentir via OAuth e verificar conta/permissões."
+    },
+    "surface": "requires-current-host-discovery",
+    "operation_status": "requested-not-provider-verified",
+    "live_validation": "not_executed"
+  },
+  {
+    "provider": "snov.io",
+    "operations": [
+      "companies.enrich",
+      "people.search",
+      "people.reveal_email"
+    ],
+    "installation_kind": "remote-mcp",
+    "official_url": "https://snov.io/knowledgebase/how-to-use-snov-io-mcp-with-your-ai-assistant/",
+    "checked_at": "2026-10-26",
+    "documentation_status": "official-source-reviewed",
+    "support_level": "documentation_only",
+    "host_paths": {
+      "codex": "Verificar catálogo do aplicativo e suporte a conector MCP remoto; confirmar plano e custos antes de consultar.",
+      "claude": "Usar o guia oficial do Snov.io para conectar o MCP no host disponível; verificar identidade e operações."
+    },
+    "surface": "requires-current-host-discovery",
+    "operation_status": "requested-not-provider-verified",
+    "live_validation": "not_executed"
+  },
+  {
+    "provider": "cortex",
+    "operations": [],
+    "installation_kind": "unknown",
+    "documentation_status": "product-not-identified",
+    "support_level": "recognized_only",
+    "requires_product_confirmation": true,
+    "host_paths": {
+      "codex": "Confirmar produto, fornecedor e site; pesquisar documentação oficial e catálogo do host.",
+      "claude": "Confirmar produto, fornecedor e site; pesquisar documentação oficial e catálogo do host."
+    },
+    "surface": "requires-current-host-discovery",
+    "operation_status": "requested-not-provider-verified",
+    "live_validation": "not_executed"
+  },
+  {
+    "provider": "smtp",
+    "operations": [
+      "email.send"
+    ],
+    "installation_kind": "provider-specific",
+    "official_url": "https://www.rfc-editor.org/rfc/rfc5321.html",
+    "checked_at": "2026-10-26",
+    "documentation_status": "official-protocol-reviewed-not-provider-setup",
+    "support_level": "protocol_only",
+    "host_paths": {
+      "codex": "Identificar provedor e conector de envio suportado; guardar segredos no mecanismo nativo. SMTP não lê respostas.",
+      "claude": "Identificar provedor e conector de envio suportado; guardar segredos no mecanismo nativo. SMTP não lê respostas."
+    },
+    "surface": "requires-current-host-discovery",
+    "operation_status": "requested-not-provider-verified",
+    "live_validation": "not_executed"
+  }
+]

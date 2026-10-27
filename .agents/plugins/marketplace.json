@@ -1,0 +1,20 @@
+{
+  "name": "aclad-latam",
+  "interface": {
+    "displayName": "ACLAD · Parceiros NetSuite"
+  },
+  "plugins": [
+    {
+      "name": "aclad-prospecting",
+      "source": {
+        "source": "local",
+        "path": "./plugins/aclad-prospecting"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Business & Operations"
+    }
+  ]
+}

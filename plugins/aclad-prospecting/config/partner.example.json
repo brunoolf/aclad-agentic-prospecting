@@ -1,0 +1,35 @@
+{
+  "language": "pt-BR",
+  "partner": {
+    "name": "Parceiro Fictício",
+    "country": "BR",
+    "products": [
+      "ERP"
+    ],
+    "industries": [
+      "Indústria"
+    ],
+    "differentiators": [
+      "Exemplo fictício para configuração"
+    ]
+  },
+  "seller": {
+    "territory": [
+      "Sul"
+    ],
+    "size_bands": [
+      "Médio porte"
+    ],
+    "writing_style": "Direto e cordial"
+  },
+  "tool_suggestions": [
+    "hubspot",
+    "apollo",
+    "outlook"
+  ],
+  "schedule_preferences": {
+    "mode": "manual",
+    "timezone": "America/Sao_Paulo",
+    "paused": true
+  }
+}

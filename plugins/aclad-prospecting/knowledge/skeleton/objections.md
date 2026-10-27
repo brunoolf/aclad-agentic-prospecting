@@ -1,0 +1,9 @@
+# Objections
+
+The objections you hear every week, and the answer that has actually worked.
+Write the objection in the customer's words.
+
+## Format
+**They say:** ...
+**What is really behind it:** ...
+**What works:** ...

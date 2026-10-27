@@ -1,0 +1,43 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "aclad-prospecting",
+  "version": "0.4.1",
+  "description": "Prospecção para parceiros NetSuite com pesquisa, ICPs revisados, conexões assistidas e acompanhamento privado.",
+  "author": {
+    "name": "Alliances and Channels, Oracle NetSuite LATAM"
+  },
+  "license": "MIT",
+  "keywords": [
+    "sales",
+    "prospecting",
+    "crm",
+    "netsuite",
+    "latam"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "ACLAD Prospecting",
+        "shortDescription": "Prospecção para NetSuite",
+        "longDescription": "Configure seu ambiente individual, conecte CRM e ferramentas de prospecção, pesquise sites e construa três ICPs. Selecione contas e contatos, prepare mensagens personalizadas e acompanhe respostas com histórico privado na pasta do projeto. Ofertas limitadas a NetSuite e complementos. Enriquecimento pago, escrita no CRM e envios exigem as respectivas aprovações. Conectores e agendamento dependem das capacidades verificadas do aplicativo.",
+        "developerName": "Alliances and Channels, Oracle NetSuite LATAM",
+        "category": "Business & Operations",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "defaultPrompt": [
+          "Configure meu assistente de prospecção",
+          "Monte meus ICPs com os clientes do CRM",
+          "Retome minhas campanhas e confira respostas"
+        ],
+        "logo": "./assets/icon-light.png",
+        "logoDark": "./assets/icon-dark.png",
+        "composerIcon": "./assets/icon-light.png",
+        "composerIconDark": "./assets/icon-dark.png"
+      },
+      "hooks": "./hooks/codex.json",
+      "onboardingSkill": "./skills/setup/SKILL.md"
+    }
+  }
+}

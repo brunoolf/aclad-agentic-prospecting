@@ -1,0 +1,940 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "language": {
+      "type": "string"
+    },
+    "partner": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "regions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "industries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "differentiators": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "authorized_references": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "commercial_rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "name": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string"
+        },
+        "offerings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "name",
+              "kind"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kind": {
+                "enum": [
+                  "netsuite",
+                  "complement"
+                ]
+              },
+              "netsuite_relationship": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "product",
+                  "type"
+                ],
+                "properties": {
+                  "product": {
+                    "const": "NetSuite"
+                  },
+                  "type": {
+                    "enum": [
+                      "integration",
+                      "extension",
+                      "localization"
+                    ]
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                }
+              },
+              "status": {
+                "enum": [
+                  "pending_review",
+                  "approved"
+                ]
+              },
+              "approved_by": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              },
+              "authorized_references": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "independent_product": {
+                "type": "boolean",
+                "const": false
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "complement"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "netsuite_relationship",
+                    "independent_product"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "netsuite"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "name": {
+                      "enum": [
+                        "NetSuite",
+                        "Oracle NetSuite",
+                        "netsuite",
+                        "oracle netsuite"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "required": [
+                    "status"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "approved"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "approved_by",
+                    "source_ids"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "seller": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "language": {
+          "type": "string"
+        },
+        "territory": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "size_bands": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "writing_style": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "crm_user_id": {
+          "type": "string"
+        },
+        "signature": {
+          "type": "string"
+        },
+        "portfolio": {
+          "type": "string"
+        },
+        "writing_examples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "selected_example_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "tool_suggestions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "crm_mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "type": "string"
+        },
+        "customer_field": {
+          "type": "string"
+        },
+        "customer_value": {
+          "type": "string"
+        },
+        "owner_field": {
+          "type": "string"
+        },
+        "won_field": {
+          "type": "string"
+        },
+        "won_value": {
+          "type": "string"
+        },
+        "prospect_field": {
+          "type": "string"
+        },
+        "prospect_value": {
+          "type": "string"
+        },
+        "account_id_field": {
+          "type": "string"
+        },
+        "annual_revenue_field": {
+          "type": "string"
+        },
+        "currency_field": {
+          "type": "string"
+        },
+        "revenue_year_field": {
+          "type": "string"
+        }
+      }
+    },
+    "schedule_preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string"
+        },
+        "days": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "times": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "paused": {
+          "type": "boolean"
+        }
+      }
+    },
+    "templates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "icp": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "criteria": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "countries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "states": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "industries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "subindustries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "size_bands": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "products": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "services": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "regions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "revenue_min": {
+              "type": "string"
+            },
+            "revenue_max": {
+              "type": "string"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "revenue_year": {
+              "type": "string"
+            },
+            "notes": {
+              "type": "string"
+            },
+            "employee_min": {
+              "type": "integer"
+            },
+            "employee_max": {
+              "type": "integer"
+            }
+          }
+        },
+        "exclusions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "confirmed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "applicability": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "imported_review_pending": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "icp.criteria": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "countries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "states": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "industries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "subindustries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "size_bands": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "products": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "services": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "regions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "revenue_min": {
+              "type": "string"
+            },
+            "revenue_max": {
+              "type": "string"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "revenue_year": {
+              "type": "string"
+            },
+            "notes": {
+              "type": "string"
+            },
+            "employee_min": {
+              "type": "integer"
+            },
+            "employee_max": {
+              "type": "integer"
+            }
+          }
+        },
+        "icp.exclusions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rules.confirmed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "applicability": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aclad:profile:v1",
+  "title": "ACLAD private profile v1",
+  "$defs": {
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "version",
+        "created_at",
+        "sections"
+      ],
+      "properties": {
+        "format": {
+          "const": "aclad-profile"
+        },
+        "version": {
+          "const": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sections": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "partner": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "regions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "products": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "services": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "industries": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "differentiators": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "authorized_references": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "commercial_rules": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "name": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "website": {
+                  "type": "string"
+                },
+                "offerings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "id",
+                      "name",
+                      "kind"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "name": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "kind": {
+                        "enum": [
+                          "netsuite",
+                          "complement"
+                        ]
+                      },
+                      "netsuite_relationship": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "product",
+                          "type"
+                        ],
+                        "properties": {
+                          "product": {
+                            "const": "NetSuite"
+                          },
+                          "type": {
+                            "enum": [
+                              "integration",
+                              "extension",
+                              "localization"
+                            ]
+                          },
+                          "description": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "status": {
+                        "enum": [
+                          "pending_review",
+                          "approved"
+                        ]
+                      },
+                      "approved_by": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "source_ids": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1
+                      },
+                      "authorized_references": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "independent_product": {
+                        "type": "boolean",
+                        "const": false
+                      }
+                    },
+                    "allOf": [
+                      {
+                        "if": {
+                          "properties": {
+                            "kind": {
+                              "const": "complement"
+                            }
+                          }
+                        },
+                        "then": {
+                          "required": [
+                            "netsuite_relationship",
+                            "independent_product"
+                          ]
+                        }
+                      },
+                      {
+                        "if": {
+                          "properties": {
+                            "kind": {
+                              "const": "netsuite"
+                            }
+                          }
+                        },
+                        "then": {
+                          "properties": {
+                            "name": {
+                              "enum": [
+                                "NetSuite",
+                                "Oracle NetSuite",
+                                "netsuite",
+                                "oracle netsuite"
+                              ]
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "if": {
+                          "required": [
+                            "status"
+                          ],
+                          "properties": {
+                            "status": {
+                              "const": "approved"
+                            }
+                          }
+                        },
+                        "then": {
+                          "required": [
+                            "approved_by",
+                            "source_ids"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "icp.criteria": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "countries": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "states": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "industries": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "subindustries": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "size_bands": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "products": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "services": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "regions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "revenue_min": {
+                  "type": "string"
+                },
+                "revenue_max": {
+                  "type": "string"
+                },
+                "currency": {
+                  "type": "string"
+                },
+                "revenue_year": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                },
+                "employee_min": {
+                  "type": "integer"
+                },
+                "employee_max": {
+                  "type": "integer"
+                }
+              }
+            },
+            "icp.exclusions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "rules.confirmed": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "applicability": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "templates": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "subject": {
+                    "type": "string"
+                  },
+                  "body": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string"
+                  },
+                  "purpose": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "tool_suggestions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "personal": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "language": {
+                  "type": "string"
+                },
+                "territory": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "size_bands": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "writing_style": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
