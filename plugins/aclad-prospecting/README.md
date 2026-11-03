@@ -11,16 +11,23 @@ Seu assistente de prospecção para parceiros NetSuite. Configure o perfil da em
 
 Escolha o aplicativo que você vai usar.
 
+Link do marketplace: [brunoolf/aclad-agentic-prospecting](https://github.com/brunoolf/aclad-agentic-prospecting).
+
 ### Codex
 
-Com o Codex instalado, execute estes dois comandos no terminal:
+1. Abra a área **Plugins** do Codex e escolha **Adicionar marketplace**.
+2. Cole `https://github.com/brunoolf/aclad-agentic-prospecting` e adicione.
+3. No catálogo ACLAD, escolha **ACLAD Prospecting**, instale e habilite.
+4. Revise as confirmações de permissões e hooks na própria tela.
+
+Se preferir instalar pelo terminal, com o Codex instalado:
 
 ```sh
 codex plugin marketplace add brunoolf/aclad-agentic-prospecting
 codex plugin add aclad-prospecting@aclad-latam
 ```
 
-Depois abra uma conversa nova no Codex. Se o aplicativo pedir confirmação para habilitar o plugin ou seus hooks, revise e confirme na própria tela.
+Depois siga **Começar a usar**, abaixo, para criar sua pasta e abrir o setup nela.
 
 ### Claude Code
 
@@ -31,25 +38,42 @@ No Claude Code, execute:
 /plugin install aclad-prospecting@aclad-latam
 ```
 
-Abra uma conversa nova e use `/aclad-prospecting:setup`.
+Revise a instalação e depois siga **Começar a usar**, abaixo.
 
 ### Claude Desktop / Cowork
 
-[**Baixar o plugin para Claude**](https://github.com/brunoolf/aclad-agentic-prospecting/releases/latest/download/aclad-prospecting-claude.zip)
+1. Abra a aba **Cowork** e depois **Personalizar / Customize → Plugins**.
+2. Escolha **Adicionar / Add → Adicionar marketplace**.
+3. Escolha adicionar por repositório e cole `https://github.com/brunoolf/aclad-agentic-prospecting`.
+4. Adicione o marketplace, escolha **ACLAD Prospecting** no catálogo e habilite o plugin.
 
-1. Baixe o ZIP pelo botão acima, sem extrair.
-2. Na área de plugins do aplicativo, escolha a opção de adicionar ou carregar um plugin e selecione o ZIP.
-3. Habilite o plugin e abra uma conversa nova no Cowork.
-
-A instalação de plugins precisa estar disponível na sua conta. Anexar o ZIP a uma conversa comum não instala o plugin.
+Os nomes dos menus podem variar com o idioma e a versão. Se a organização
+restringir marketplaces, peça ao administrador para liberar esse repositório.
 
 ## Começar a usar
 
-1. Crie uma pasta no computador para a sua prospecção.
-2. Abra essa pasta como projeto no aplicativo.
-3. Envie esta mensagem:
+1. Crie uma pasta privada no computador, por exemplo **Prospecção — Minha empresa**.
+2. No Codex ou Claude Code, abra/adicione essa pasta como projeto. No Cowork,
+   selecione essa pasta e conceda o acesso solicitado.
+3. Abra um **novo chat ou tarefa nessa pasta**, com o plugin habilitado.
+4. Cole o comando de setup do seu aplicativo:
 
-> Configure meu assistente de prospecção com o ACLAD Prospecting.
+**Codex** — confirme a habilidade de setup se o seletor aparecer:
+
+```text
+$aclad-prospecting:setup
+```
+
+**Claude Code / Cowork:**
+
+```text
+/aclad-prospecting:setup
+```
+
+5. Confirme a pasta quando o assistente perguntar e siga a configuração por blocos.
+
+Se o atalho não aparecer, confira se o plugin está habilitado e abra uma conversa
+nova. No Codex, digite `$` e selecione a habilidade `aclad-prospecting:setup`.
 
 Se o botão de configuração abrir um chat sem projeto, primeiro escolha ou confirme
 sua pasta de prospecção no aplicativo. O assistente ajudará nessa etapa antes de
@@ -66,6 +90,9 @@ há permissão de escrita. Faça login somente pelo fluxo do aplicativo; nunca e
 senha ou chave de API na conversa.
 
 Você pode manter vários ICPs nomeados e acompanhar campanhas separadas. A primeira
+configuração pergunta as **indústrias/setores** e as **subindústrias/segmentos**
+que você quer trabalhar. Confirme cada recorte antes de aprovar o ICP; também é
+possível escolher explicitamente não limitar por indústria ou subindústria. A primeira
 lista mostra nome e website: você escolhe as empresas antes do enriquecimento e
 dos contatos. Os emails são preparados como rascunhos na ferramenta conectada,
 para sua revisão antes de enviar. Se escolher acompanhamento automático, confira
@@ -82,8 +109,7 @@ Depois, você pode pedir:
 
 ## Atualizar o plugin
 
-Atualize o marketplace/plugin pela área de plugins do aplicativo. No Cowork, baixe
-o ZIP atual pelo link acima e use a opção de atualizar/substituir o plugin. Depois
+Atualize o marketplace e o plugin pela área de plugins do aplicativo. Depois
 abra uma conversa nova na **mesma pasta** e peça para retomar a configuração.
 Preserve sua pasta de prospecção; não apague nem copie o banco para outro vendedor.
 

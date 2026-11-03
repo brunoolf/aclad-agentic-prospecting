@@ -222,6 +222,9 @@ def _requirements(store: Store) -> dict[str, Payload]:
         'evidence': {'writing_style': _lookup(current, 'seller.writing_style'),
                      'reviewed_patterns': style.data if style else None}}
     automation = _automation(store, current)
+    from .icps import sector_scope
+    sectors = sector_scope(store)
+    sector_missing = ['icp.criteria.' + key for key in ('industries', 'subindustries') if key not in sectors]
     icps = [row for row in store.list('icp') if row.data.get('status') == 'active'
         and _filled(row.data.get('name')) and row.data.get('approved_revision') is not None
         and str(row.data['approved_revision']) in row.data.get('approved_versions', {})]
@@ -236,7 +239,7 @@ def _requirements(store: Store) -> dict[str, Payload]:
         'connections': {'missing': connections['missing'], 'evidence': connections['review_evidence'], 'detail': connections},
         'communication': communication,
         'automation': {'missing': automation['missing'], 'evidence': automation['preferences'], 'detail': automation},
-        'icps': {'missing': [] if icps else ['icp.approved_named'],
+        'icps': {'missing': sector_missing + ([] if icps else ['icp.approved_named']),
                  'evidence': [{'id': row.id, 'name': row.data['name'],
                     'approved_revision': row.data['approved_revision']} for row in icps]},
         'campaign': {'missing': [] if campaigns else ['campaign.bound_icp'],
@@ -367,7 +370,15 @@ def next_guided_question(store: Store) -> Payload | None:
         'campaign': 'Vamos escolher o objetivo da primeira campanha e o ICP aprovado que ela vai usar.',
     }[block_id]
     options = []
-    if fields and fields[0] == 'setup.prospecting_history':
+    if block_id == 'icps' and fields and fields[0] in {'icp.criteria.industries', 'icp.criteria.subindustries'}:
+        fields = fields[:1]
+        if fields[0] == 'icp.criteria.industries':
+            question = 'Quais indústrias ou setores você quer trabalhar neste ICP? Pode escolher mais de um ou dizer que não quer limitar por indústria.'
+            options = [{'label': 'Sem limitar por indústria', 'value': []}]
+        else:
+            question = 'Dentro dessas indústrias, quais subindústrias ou segmentos específicos você quer focar? Por exemplo, alimentos dentro de manufatura. Também pode seguir sem esse recorte.'
+            options = [{'label': 'Sem limitar por subindústria', 'value': []}]
+    elif fields and fields[0] == 'setup.prospecting_history':
         question = 'Você vai começar uma prospecção nova ou acompanhar abordagens que já enviou?'
         options = [{'label': 'Começar agora', 'value': 'new'}, {'label': 'Retomar histórico', 'value': 'existing'}]
     elif block_id == 'automation' and 'schedule_preferences.mode' in fields:

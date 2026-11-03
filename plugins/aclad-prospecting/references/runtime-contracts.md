@@ -217,6 +217,11 @@ Web discovery of companies/people/emails is not an alternative operation.
 
 `icp-catalog` lists durable named profiles and versions; `icp-propose` accepts name
 and optional description, preserving previous calls and approved snapshots.
+Guided setup asks `icp.criteria.industries` and `icp.criteria.subindustries`
+separately via `setup-next`/`setup-answer`. Empty lists are explicit no-restriction
+choices; absent lists remain unanswered. A proposal records `sector_scope` and
+approval requires both choices and matching specific industry/subindustry filters.
+Changed choices require a new proposal; existing approved campaign snapshots stay pinned.
 `campaign-context` reads one campaign's fixed objective, pinned ICP, records,
 operational stage and pending work. Local ICP/campaign Markdown projections are
 private, rebuildable views; changes to those documents are not imported as state

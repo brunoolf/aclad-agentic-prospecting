@@ -9,6 +9,31 @@ from .models import Event, GateError, Payload, Record, canonical, now_utc, paylo
 from .store import Store
 
 
+def sector_scope(store: Store) -> Payload:
+    """An empty reviewed list means no restriction; an absent list is unanswered."""
+    from .profiles import _current
+    criteria = _current(store).get('icp', {}).get('criteria', {})
+    return {key: deepcopy(criteria[key]) for key in ('industries', 'subindustries')
+            if isinstance(criteria.get(key), list)
+            and all(isinstance(value, str) and value.strip() for value in criteria[key])}
+
+
+def _review_sectors(store: Store, data: Payload) -> None:
+    if not store.get('profile', 'guided-onboarding') and 'sector_scope' not in data:
+        return
+    scope = data.get('sector_scope', {})
+    if set(scope) != {'industries', 'subindustries'}:
+        raise GateError('icp_sector_review_required',
+            'Confirme a indústria e a subindústria com o vendedor antes de concluir o ICP. Sem recorte também precisa ser uma escolha explícita.')
+    if scope != sector_scope(store):
+        raise GateError('icp_context_changed', 'Reconstrua a proposta após alterar a indústria ou subindústria escolhida.')
+    for field, key in (('industry', 'industries'), ('subindustry', 'subindustries')):
+        if scope[key] and not any(p['field'] == field and p['operator'] == 'in'
+                and set(p['value']).issubset(scope[key]) for p in data['criteria']):
+            raise GateError('icp_sector_criteria_required',
+                'Inclua nos critérios o recorte de indústria e subindústria confirmado pelo vendedor.')
+
+
 def _predicates(values: object) -> list[Payload]:
     if not isinstance(values, list):
         raise GateError('invalid_icp_predicate')
@@ -165,7 +190,7 @@ def _content(data: Payload) -> Payload:
     content = {key: deepcopy(data[key]) for key in
             ('criteria', 'exclusions', 'source_ids', 'source_versions', 'strategic',
              'partner_exclusions', 'divergences')}
-    for key in ('name', 'description'):
+    for key in ('name', 'description', 'sector_scope'):
         if key in data:
             content[key] = deepcopy(data[key])
     return content
@@ -204,6 +229,8 @@ def propose_icp(store: Store, criteria: list[Payload], exclusions: list[Payload]
                 'source_versions': source_versions, 'strategic': strategic,
                 'partner_exclusions': partner_exclusions, 'divergences': divergences,
                 'status': 'proposed', 'created_at': now, 'approved_versions': {}}
+        if store.get('profile', 'guided-onboarding'):
+            data['sector_scope'] = sector_scope(store)
         record = store.put('icp', id, data, None)
         store.record_event(Event('evt-' + uuid4().hex, id, 'icp_proposed', now,
                                  {'revision': record.revision, 'strategic': strategic,
@@ -231,6 +258,7 @@ def approve_icp(store: Store, id: str, revision: int, approved_by: str) -> Recor
             raise GateError('invalid_icp_description')
         _predicates(data['criteria'])
         _predicates(data['exclusions'])
+        _review_sectors(store, data)
         if (not data['criteria'] or type(data['strategic']) is not bool
                 or (not data['source_ids'] and (not data['strategic'] or any(
                     p['basis'] == 'evidence' for p in data['criteria'] + data['exclusions'])))):

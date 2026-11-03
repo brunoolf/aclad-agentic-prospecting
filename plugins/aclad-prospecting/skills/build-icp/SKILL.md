@@ -64,6 +64,20 @@ not demonstrated success. A sample does not describe all partner customers.
 Ask which segment the seller wants to develop; historical patterns do not forbid
 a new strategic segment. Use reviewed partner-facing methodology where relevant.
 
+Before proposing **each** ICP, explicitly ask which industries/sectors the seller
+targets, then which subindustries/specific segments to focus on. Use native
+interactive questions when available; otherwise ask one question at a time.
+Offer examples from the accessible CRM without treating them as the seller's
+choice. A name, territory or size band does not establish sector targeting.
+Save the two reviewed lists using `setup-answer` fields `icp.criteria.industries`
+and `icp.criteria.subindustries`. An empty list means the seller explicitly chose
+no restriction at that level; silence, uncertainty and missing data do not.
+Apply specific choices as `industry`/`subindustry` membership predicates. Confirm
+the choice again for a new ICP; earlier named ICPs and campaign snapshots remain
+unchanged. In guided setup, approval requires both decisions, preserves their
+`sector_scope` in the exact snapshot, and rejects a changed choice or an omitted
+specific filter. Propose again after resolving a missing or changed decision.
+
 Invoke `icp-propose` with `criteria`, `exclusions`, private analysis `source_ids` and
 `strategic`, plus the confirmed `name` and optional `description`. Saving
 `icp.criteria` as an onboarding answer does not create, approve or bind an ICP.

@@ -60,6 +60,8 @@ def complete_guided_workspace_setup(store):
             'source_ids': ['synthetic-partner-review']}])
     save_answer(store, 'setup.prospecting_history', 'new')
     save_answer(store, 'schedule_preferences.mode', 'manual')
+    save_answer(store, 'icp.criteria.industries', [])
+    save_answer(store, 'icp.criteria.subindustries', [])
     environment_readiness(store, {'surface': 'codex-local', 'runtime_version': '3.13',
         'durable_state': True, 'state_accessible_to_executor': True,
         'identity_resolved': True, 'tools_verified': True, 'scheduler_verified': False})

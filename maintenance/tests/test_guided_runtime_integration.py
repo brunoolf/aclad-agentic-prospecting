@@ -96,6 +96,9 @@ class GuidedScheduleScopeTests(unittest.TestCase):
         self.assertFalse(self.store.list('schedule'))
 
     def test_empty_bound_campaign_can_be_watched_before_first_email(self):
+        from aclad.onboarding import save_answer
+        save_answer(self.store, 'icp.criteria.industries', [])
+        save_answer(self.store, 'icp.criteria.subindustries', [])
         from aclad.icps import propose_icp, approve_icp, bind_icp
         from aclad.prospecting import open_campaign
         from aclad.scheduling import schedule_request

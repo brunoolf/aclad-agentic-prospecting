@@ -175,7 +175,13 @@ remove DNC, cria draft, envia, escreve CRM ou autoriza gasto.
    Fonte bloqueada ou ausente bloqueia descoberta; não há fallback de web para
    empresas, pessoas ou emails.
 5. Na etapa ICP, consulte `icp-catalog` com `{}`; `icp-propose` aceita `name` e
-   `description` além dos critérios/fontes/strategic. `icp-approve` aprova a revisão;
+   `description` além dos critérios/fontes/strategic. Pergunte indústria e depois
+   subindústria para cada perfil; salve `icp.criteria.industries` e
+   `icp.criteria.subindustries` com `setup-answer`. Use listas, inclusive `[]`
+   somente após escolha explícita de sem recorte. Aplique as escolhas específicas
+   como predicados industry/subindustry. A proposta guarda sector_scope e não pode
+   ser aprovada sem ambas as decisões; mudanças exigem nova proposta.
+   `icp-approve` aprova a revisão;
    `campaign-create` e `icp-bind` fixam objetivo e a revisão da primeira campanha.
    `campaign-context` recebe `campaign_id` para recuperar estado e próximo estágio.
 6. Programação agendada/combinada é revisada no bloco automation. A primeira

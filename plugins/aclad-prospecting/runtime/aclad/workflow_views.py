@@ -32,6 +32,7 @@ def _icp(record: Record) -> Payload:
             'revision': record.revision, 'approved_revision': data.get('approved_revision'),
             'status': data.get('status', 'unknown'), 'strategic': data.get('strategic'),
             'criteria': deepcopy(data.get('criteria', [])),
+            'sector_scope': deepcopy(data.get('sector_scope')),
             'exclusions': deepcopy(data.get('exclusions', [])),
             'source_ids': deepcopy(data.get('source_ids', [])),
             'source_versions': deepcopy(data.get('source_versions', {})),

@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "aclad-prospecting",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Prospecção para parceiros NetSuite com pesquisa, ICPs revisados, conexões assistidas e acompanhamento privado.",
   "author": {
     "name": "Alliances and Channels, Oracle NetSuite LATAM"

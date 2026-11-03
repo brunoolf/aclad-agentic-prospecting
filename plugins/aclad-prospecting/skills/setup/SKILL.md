@@ -78,7 +78,7 @@ checkpoint depois da transição. Um campo respondido não comprova tarefa execu
 | 3 / `connections` | CRM, fonte de prospecção e comunicação obrigatórios, com identidade e capacidades comprovadas. |
 | 4 / `communication` | Tom, extensão, formalidade e exemplo de abordagem revisados. |
 | 5 / `automation` | Modo manual/agendado/combinado escolhido; programação e destino revisados quando aplicável. |
-| 6 / `icps` | Um ou vários ICPs nomeados, documentados e aprovados. |
+| 6 / `icps` | Indústria e subindústria confirmadas; um ou vários ICPs nomeados, documentados e aprovados. |
 | 7 / `campaign` | Objetivo fixo, ICP/versão vinculados e acompanhamento finalizado antes da primeira lista. |
 
 Não misture blocos: enquanto conecta ferramentas, resolva essa conexão e seu bloqueio;
@@ -169,7 +169,18 @@ reconciliação pelo ID existente, nunca outra criação.
 
 Use [build-icp](../build-icp/SKILL.md). Consulte `icp-catalog`; dê nome a cada ICP e
 separe as três bases (clientes do parceiro, clientes do vendedor, contas em
-prospecção) de perfis estratégicos. Não exigir ano do faturamento quando a fonte não
+prospecção) de perfis estratégicos. Antes de propor ou fechar cada ICP, pergunte
+explicitamente quais **indústrias/setores** o vendedor ataca e depois quais
+**subindústrias/segmentos** quer focar. São duas decisões separadas; território,
+porte, nome do ICP e concentração histórica do CRM não respondem por ele.
+Use as perguntas interativas de `setup-next` e salve `icp.criteria.industries` e
+`icp.criteria.subindustries` como listas de nomes revisados. Lista vazia significa
+somente uma escolha explícita de **sem recorte**, nunca ausência de resposta.
+Se não souber, ofereça exemplos e mantenha a decisão pendente. Reconfirme o recorte
+ao criar outro ICP; não sobrescreva os anteriores. Inclua as escolhas específicas
+nos predicados `industry`/`subindustry` antes de `icp-propose`. O runtime bloqueia
+aprovação sem ambas as respostas ou quando o filtro omite o recorte escolhido.
+Não exigir ano do faturamento quando a fonte não
 o informa. Proponha critérios, fontes e hipóteses; obtenha aprovação da versão.
 Os documentos locais por ICP são projeções do SQLite, não autorizações por arquivo.
 

@@ -71,6 +71,8 @@ class GuidedOnboardingTests(unittest.TestCase):
     def full_manual(self):
         self.before_automation()
         save_answer(self.store,'schedule_preferences.mode','manual'); self.complete('automation')
+        save_answer(self.store, 'icp.criteria.industries', [])
+        save_answer(self.store, 'icp.criteria.subindustries', [])
         from aclad.icps import propose_icp,approve_icp,bind_icp
         from aclad.prospecting import open_campaign
         icp=propose_icp(self.store,[{'field':'country','operator':'in','value':['BR'],'basis':'hypothesis'}],
@@ -81,6 +83,94 @@ class GuidedOnboardingTests(unittest.TestCase):
         open_campaign(self.store,'campaign-one','Apresentar NetSuite')
         bind_icp(self.store,'campaign-one',icp.id,icp.revision)
         self.complete('campaign')
+
+    def before_icps(self):
+        self.before_automation()
+        save_answer(self.store, 'schedule_preferences.mode', 'manual')
+        self.complete('automation')
+
+    def test_icp_asks_industry_then_subindustry_and_preserves_answers_on_resume(self):
+        self.before_icps()
+        question = next_question(self.store)
+        self.assertEqual(question['block_id'], 'icps')
+        self.assertEqual(question['field'], 'icp.criteria.industries')
+        self.assertIn('indústria', question['question'].lower())
+        save_answer(self.store, question['field'], ['Manufatura'])
+        self.store.close(); self.store = Store(self.root / '.aclad', self.scope)
+        question = next_question(self.store)
+        self.assertEqual(question['field'], 'icp.criteria.subindustries')
+        self.assertIn('subindústria', question['question'].lower())
+        self.assertTrue(any(option['value'] == [] for option in question['options']))
+        save_answer(self.store, question['field'], [])
+        self.assertEqual(next_question(self.store)['missing'], ['icp.approved_named'])
+
+    def test_icp_cannot_be_approved_without_reviewing_both_sector_questions(self):
+        self.before_icps()
+        from aclad.icps import propose_icp, approve_icp
+        criteria = [{'field': 'country', 'operator': 'in', 'value': ['BR'], 'basis': 'hypothesis'}]
+        proposed = propose_icp(self.store, criteria, [], [], True, name='Brasil')
+        with self.assertRaises(GateError) as error:
+            approve_icp(self.store, proposed.id, proposed.revision, 'seller')
+        self.assertEqual(error.exception.code, 'icp_sector_review_required')
+        self.assertEqual(self.store.get('icp', proposed.id).data['status'], 'proposed')
+        save_answer(self.store, 'icp.criteria.industries', [])
+        proposed = propose_icp(self.store, criteria, [], [], True, name='Brasil')
+        with self.assertRaises(GateError) as error:
+            approve_icp(self.store, proposed.id, proposed.revision, 'seller')
+        self.assertEqual(error.exception.code, 'icp_sector_review_required')
+        save_answer(self.store, 'icp.criteria.subindustries', [])
+        proposed = propose_icp(self.store, criteria, [], [], True, name='Brasil')
+        approved = approve_icp(self.store, proposed.id, proposed.revision, 'seller')
+        scope = approved.data['approved_versions'][str(approved.revision)]['sector_scope']
+        self.assertEqual(scope, {'industries': [], 'subindustries': []})
+        from aclad.workflow_views import icp_catalog
+        entry = next(row for row in icp_catalog(self.store)['icps'] if row['id'] == approved.id)
+        self.assertEqual(entry['sector_scope'], {'industries': [], 'subindustries': []})
+        document = (self.root / entry['document_path']).read_text()
+        self.assertIn('"sector_scope"', document)
+        self.complete('icps')
+
+    def test_chosen_sectors_must_be_applied_to_icp_filters(self):
+        self.before_icps()
+        from aclad.icps import propose_icp, approve_icp
+        save_answer(self.store, 'icp.criteria.industries', ['Manufatura'])
+        save_answer(self.store, 'icp.criteria.subindustries', ['Alimentos'])
+        criteria = [{'field': 'country', 'operator': 'in', 'value': ['BR'], 'basis': 'hypothesis'}]
+        for field, values in [('industry', ['Manufatura']), ('subindustry', ['Alimentos'])]:
+            proposed = propose_icp(self.store, criteria, [], [], True, name='Alimentos BR')
+            with self.assertRaises(GateError) as error:
+                approve_icp(self.store, proposed.id, proposed.revision, 'seller')
+            self.assertEqual(error.exception.code, 'icp_sector_criteria_required')
+            criteria.append({'field': field, 'operator': 'in', 'value': values, 'basis': 'hypothesis'})
+        proposed = propose_icp(self.store, criteria, [], [], True, name='Alimentos BR')
+        approved = approve_icp(self.store, proposed.id, proposed.revision, 'seller')
+        self.assertEqual(approved.data['approved_versions'][str(approved.revision)]['criteria'], criteria)
+
+    def test_changing_sector_answers_requires_a_new_icp_proposal(self):
+        self.before_icps()
+        from aclad.icps import propose_icp, approve_icp
+        save_answer(self.store, 'icp.criteria.industries', [])
+        save_answer(self.store, 'icp.criteria.subindustries', [])
+        proposed = propose_icp(self.store, [{'field': 'industry', 'operator': 'in',
+            'value': ['Manufatura'], 'basis': 'hypothesis'}], [], [], True)
+        save_answer(self.store, 'icp.criteria.industries', ['Serviços'])
+        with self.assertRaises(GateError) as error:
+            approve_icp(self.store, proposed.id, proposed.revision, 'seller')
+        self.assertEqual(error.exception.code, 'icp_context_changed')
+
+    def test_named_legacy_icp_does_not_hide_unanswered_sector_questions(self):
+        self.before_icps()
+        self.store.put('icp', 'legacy', {'name': 'Brasil', 'status': 'active',
+            'approved_revision': 2, 'approved_versions': {'2': {'digest': 'legacy'}}}, None)
+        with self.assertRaises(GateError) as error:
+            self.complete('icps')
+        self.assertEqual(error.exception.code, 'setup_block_incomplete')
+        self.assertEqual(next_question(self.store)['field'], 'icp.criteria.industries')
+
+    def test_blank_sector_values_cannot_silently_mean_unrestricted(self):
+        for field in ('icp.criteria.industries', 'icp.criteria.subindustries'):
+            with self.subTest(field=field), self.assertRaises(GateError):
+                save_answer(self.store, field, ['  '])
 
     def test_start_is_idempotent_and_resume_preserves_reviews(self):
         first=self.store.get('profile','guided-onboarding')

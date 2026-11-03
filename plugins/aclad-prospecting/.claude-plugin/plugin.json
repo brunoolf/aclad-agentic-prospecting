@@ -1,7 +1,7 @@
 {
   "name": "aclad-prospecting",
   "description": "Prospecção para parceiros NetSuite com pesquisa, ICPs revisados, conexões assistidas e acompanhamento privado.",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "author": {
     "name": "Alliances and Channels, Oracle NetSuite LATAM"
   },

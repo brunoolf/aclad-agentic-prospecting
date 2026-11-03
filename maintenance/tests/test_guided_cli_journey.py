@@ -59,6 +59,8 @@ class GuidedCliJourneyTests(TestCase):
             complete('automation')
             ids=[]
             for name, industry in [('Financeiro São Paulo', 'financial'), ('Indústria Brasil', 'manufacturing')]:
+                answer('icp.criteria.industries', [industry])
+                answer('icp.criteria.subindustries', [])
                 icp = call('icp-propose', {'name': name, 'description': 'Perfil estratégico revisado',
                     'criteria': [{'field': 'industry', 'operator': 'in', 'value': [industry], 'basis': 'hypothesis'}],
                     'exclusions': [], 'source_ids': [], 'strategic': True})

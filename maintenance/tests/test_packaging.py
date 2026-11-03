@@ -150,7 +150,7 @@ class PackagingTests(unittest.TestCase):
         for surface in ('codex','claude'):
             with zipfile.ZipFile(self.build(surface)) as package:
                 for manifest in ('.codex-plugin/plugin.json','.claude-plugin/plugin.json'):
-                    self.assertEqual(json.loads(package.read(manifest))['version'],'0.5.0')
+                    self.assertEqual(json.loads(package.read(manifest))['version'],'0.5.1')
                 for name in ('runtime/aclad/local_views.py','runtime/aclad/outcome_learning.py',
                              'templates/workspace/AGENTS.md','references/workspace-protocol.md'):
                     self.assertIn(name,package.namelist())
@@ -165,7 +165,7 @@ class PackagingTests(unittest.TestCase):
             portable = json.loads(package.read('plugin.json'))
             compat = json.loads(package.read('.codex-plugin/plugin.json'))
             settings = portable['extensions']['com.openai']
-            self.assertEqual(portable['version'], '0.5.0')
+            self.assertEqual(portable['version'], '0.5.1')
             self.assertEqual(settings['interface'], compat['interface'])
             self.assertEqual(settings['hooks'], './hooks/codex.json')
             self.assertEqual(settings['onboardingSkill'], './skills/setup/SKILL.md')

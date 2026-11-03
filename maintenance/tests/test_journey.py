@@ -69,6 +69,8 @@ class JourneyTests(unittest.TestCase):
                                     ('seller.territory',['BR']),('seller.crm_user_id','seller-a'),
                                     ('seller.writing_style','Direto'),('schedule_preferences.mode','combined')]:
                     save_answer(store,field,value)
+                save_answer(store, 'icp.criteria.industries', ['manufacturing'])
+                save_answer(store, 'icp.criteria.subindustries', [])
                 # The synthetic seller explicitly reviews the commercial offer before generation.
                 settings = store.get('profile', 'current').data
                 save_profile(store, dict(settings, partner=dict(settings['partner'], offerings=[{
