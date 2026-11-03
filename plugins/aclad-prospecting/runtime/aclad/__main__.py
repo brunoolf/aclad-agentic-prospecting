@@ -45,7 +45,16 @@ def main(argv: list[str] | None = None) -> int:
         root = Path(args.workspace).expanduser().resolve() if args.workspace else Path.cwd()
         if args.command in {'workspace-init', 'workspace-locate', 'workspace-migration-preview', 'workspace-migrate'}:
             if args.command == 'workspace-init':
+                if not args.workspace:
+                    raise GateError('workspace_selection_required',
+                                    'Escolha e confirme uma pasta de projeto antes de iniciar a configuração.')
                 result = initialize_workspace(root, data.get('name'))
+                from .setup_flow import start_setup
+                with_store = Store(Path(result['state_dir']), Scope(result['partner_id'], result['seller_id'], result['instance_id']))
+                try:
+                    start_setup(with_store)
+                finally:
+                    with_store.close()
             elif args.command == 'workspace-locate':
                 result = locate_workspace(root)
                 if result is None:

@@ -118,6 +118,7 @@ def command_schema(command: str) -> dict:
     if command == 'setup-answer':
         from .onboarding import QUESTIONS
         known_fields = _profile_fields(PROFILE)
+        known_fields['setup.prospecting_history'] = {'type': 'string', 'enum': ['new', 'existing']}
         # Interview-only choices are not fields in the saved profile shape.
         for row in QUESTIONS:
             known_fields.setdefault(row[0], {'type': 'string'})
@@ -143,6 +144,17 @@ def _examples() -> list[dict]:
                  'sender_object_id': 'seller-example', 'crm_confirmed': True, 'recent_replies': False}
     samples = [
         ('workspace-init', {'name': 'Prospecção Exemplo'}),
+        ('setup-start', {}),
+        ('setup-status', {}),
+        ('setup-block-complete', {'block_id': 'workspace', 'reviewed_by': 'seller-example'}),
+        ('setup-answer', {'field': 'setup.prospecting_history', 'value': 'new'}),
+        ('icp-catalog', {}),
+        ('campaign-context', {'campaign_id': 'campaign-example'}),
+        ('proposal-bind-native', {'proposal_id': 'proposal-example', 'revision': 1,
+            'native_input': {'to': [{'email': 'person@example.invalid'}],
+                'subject': message['subject'], 'text_content': message['body']},
+            'field_mapping': {'message.to': 'to', 'message.cc': 'cc', 'message.bcc': 'bcc',
+                'message.subject': 'subject', 'message.body': 'text_content'}}),
         ('setup-next', {}),
         ('setup-answer', {'field': 'partner.name', 'value': 'Parceiro Exemplo'}),
         ('setup-answer', {'field': 'partner.website', 'value': 'https://example.invalid'}),

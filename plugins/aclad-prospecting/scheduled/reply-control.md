@@ -3,7 +3,11 @@
 A preferência pode ser manual, agendada ou combinada. O vendedor escolhe dias,
 um ou vários horários, fuso IANA e campanhas. Não existe frequência padrão já
 ativada. A criação depende de revisão da programação, consulta manual inicial,
-armazenamento acessível e executor nativo comprovados.
+armazenamento acessível e executor nativo comprovados. No onboarding, coletar e
+revisar a programação no bloco automation; quando faltar campanha, registrar essa
+pendência e concluir a ativação no bloco campaign depois de `icp-bind`. Não deixar
+um pedido de rotina esquecido como preferência. `setup-status` deve mostrar essa
+ativação pendente e impedir anunciar setup completo no modo agendado/combinado.
 
 Preview usa a primeira ocorrência de horário repetido em mudança de fuso. Horário
 inexistente passa ao primeiro instante válido do mesmo dia; colisões contam uma
@@ -31,7 +35,8 @@ consulta. A consulta manual sempre apresenta horário e cobertura.
 O destino é o mesmo projeto e a mesma pasta: `project_job` para execuções do projeto,
 ou `dedicated_chat` para conversa operacional distinta do setup. O host comprova
 `target` com `workspace_path`, `project_id` e, para chat dedicado, `chat_id` e
-`setup_chat_id` diferentes. Sem destino apropriado, explicar o limite e seguir manual.
+`setup_chat_id` diferentes. Sem destino apropriado, explicar o bloqueio e perguntar se o vendedor escolhe
+seguir manual; não alterar a escolha por conta própria.
 `native_configuration` contém `schedule` normalizado, `target` e `parameters` reais
 do scheduler. Horários no prompt não comprovam correspondência. Confirmar também
 `effective_schedule`, destino, `confirmed_at` e as três `next_occurrences` efetivas
@@ -52,4 +57,16 @@ o host chama seu scheduler oficial e registra o resultado com
 `schedule-record-result`. Nenhum ID externo é inventado. Se a criação ou edição
 ficar incerta, consultar o scheduler antes de repetir. Pausa/edição usa o ID real
 existente e respeita o executor/instância de origem. Sem scheduler, orientar e
-manter conferência manual; sem estado durável, não prometer rotina recuperável.
+oferecer conferência manual para escolha explícita; sem estado durável, não
+prometer rotina recuperável.
+
+Uma campanha já criada/vinculada, ainda sem envios, pode ter a rotina configurada.
+Não buscar a caixa inteira para “achar algo” e não exigir prospecções antigas.
+Monitorar apenas mensagens efetivamente enviadas e registradas para as campanhas
+aprovadas daquela pasta. Sem registros enviados ou mudança acionável, terminar em
+silêncio. Campanhas novas não entram silenciosamente no scope_ids da rotina: revisar
+escopo e atualizar o mesmo ID nativo quando o vendedor quiser incluí-las.
+
+A confirmação final mostra nome da rotina, destino, dias, horários, fuso, próximas
+ocorrências e situação efetiva. Salvar o native_id; não declarar “ativa” a partir
+somente do texto da instrução, da preferência ou de um arquivo de planejamento.

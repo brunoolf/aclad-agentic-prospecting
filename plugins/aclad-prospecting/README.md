@@ -51,7 +51,25 @@ A instalação de plugins precisa estar disponível na sua conta. Anexar o ZIP a
 
 > Configure meu assistente de prospecção com o ACLAD Prospecting.
 
-O assistente vai perguntar sobre sua empresa e seu site, ajudar com as ferramentas disponíveis e preparar os perfis de cliente e o estilo de escrita para sua revisão. Faça login nas ferramentas somente pelo fluxo do aplicativo, quando você decidir conectá-las.
+Se o botão de configuração abrir um chat sem projeto, primeiro escolha ou confirme
+sua pasta de prospecção no aplicativo. O assistente ajudará nessa etapa antes de
+salvar suas informações.
+
+A configuração avança por blocos: **seu ambiente → você e sua empresa → conexões →
+comunicação → acompanhamento → ICPs → primeira campanha**. Cada bloco mostra o que
+ficou pronto e o que falta. As perguntas usam seleção interativa quando o
+aplicativo oferece esse recurso; caso contrário, aparecem uma de cada vez no chat.
+
+Para começar a prospectar, conecte **um CRM, uma ferramenta de prospecção e uma de
+comunicação**. CRM somente leitura é aceito; gravações ficam bloqueadas quando não
+há permissão de escrita. Faça login somente pelo fluxo do aplicativo; nunca envie
+senha ou chave de API na conversa.
+
+Você pode manter vários ICPs nomeados e acompanhar campanhas separadas. A primeira
+lista mostra nome e website: você escolhe as empresas antes do enriquecimento e
+dos contatos. Os emails são preparados como rascunhos na ferramenta conectada,
+para sua revisão antes de enviar. Se escolher acompanhamento automático, confira
+no resumo final se a rotina foi realmente ativada.
 
 Depois, você pode pedir:
 
@@ -61,6 +79,13 @@ Depois, você pode pedir:
 - “Confira as respostas das campanhas que estou trabalhando.”
 
 **Enriquecimento pago, gravação no CRM e envio de emails precisam da sua aprovação.**
+
+## Atualizar o plugin
+
+Atualize o marketplace/plugin pela área de plugins do aplicativo. No Cowork, baixe
+o ZIP atual pelo link acima e use a opção de atualizar/substituir o plugin. Depois
+abra uma conversa nova na **mesma pasta** e peça para retomar a configuração.
+Preserve sua pasta de prospecção; não apague nem copie o banco para outro vendedor.
 
 ## Continuar em outro dia
 

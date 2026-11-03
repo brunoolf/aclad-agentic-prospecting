@@ -21,7 +21,8 @@ RUNTIME = ('__init__', '__main__', 'models', 'migrations', 'store', 'instances',
            'crm', 'outreach', 'messages', 'delivery', 'followup', 'scheduling', 'hooks',
            'workspace', 'workspace_files', 'workspace_migration', 'context',
            'meetings', 'result_metrics', 'results', 'local_views', 'outcome_learning',
-           'portfolio', 'research', 'web_fetch', 'style', 'contracts')
+           'portfolio', 'research', 'web_fetch', 'style', 'contracts', 'setup_flow', 'workflow_views',
+           'operation_validation', 'native_requests')
 SKILLS = ('setup', 'check-connections', 'build-icp', 'find-accounts', 'prioritize',
           'batch', 'check-crm', 'research-account', 'find-contacts', 'enrich-contacts',
           'save-to-crm', 'briefing', 'outreach', 'replies', 'learn')

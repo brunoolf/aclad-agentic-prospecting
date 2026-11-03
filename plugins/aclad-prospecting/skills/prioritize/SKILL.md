@@ -41,8 +41,10 @@ Evaluate in this order:
 4. Available professional-contact information, without revealing emails or paying
    for contact enrichment during prioritization.
 
-Present an ordered table with one concrete reason and any data/eligibility gaps
-per account. Explain meaningful differences without a fabricated confidence score.
+Keep the initial ordered table to company name and website. Explain overall
+coverage and necessary eligibility gaps in a short note; detailed evidence stays
+in private state and can be inspected for a selected account. Explain meaningful
+differences without a fabricated confidence score.
 State the ICP version and actual coverage. Invite the seller to select the accounts
 and present the known cost/limit for the next enrichment step. Only selected and
 properly authorized IDs can advance. Save selection and checkpoint immediately.

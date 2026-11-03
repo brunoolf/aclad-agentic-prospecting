@@ -162,17 +162,36 @@ def _context(store: Store, criteria: list[Payload], icp_exclusions: list[Payload
 
 
 def _content(data: Payload) -> Payload:
-    return {key: deepcopy(data[key]) for key in
+    content = {key: deepcopy(data[key]) for key in
             ('criteria', 'exclusions', 'source_ids', 'source_versions', 'strategic',
              'partner_exclusions', 'divergences')}
+    for key in ('name', 'description'):
+        if key in data:
+            content[key] = deepcopy(data[key])
+    return content
+
+
+def _name(criteria: list[Payload], name: str | None) -> str:
+    if name is None:
+        labels = [str(value) for predicate in criteria if predicate['operator'] == 'in'
+                  for value in predicate['value'] if isinstance(value, (str, int))]
+        name = ('ICP — ' + ' · '.join(labels[:4]))[:200] if labels else 'ICP estratégico'
+    if (not isinstance(name, str) or not name.strip() or len(name) > 200
+            or any(ord(char) < 32 for char in name)):
+        raise GateError('invalid_icp_name', 'Use a nonempty ICP name of up to 200 characters.')
+    return name.strip()
 
 
 def propose_icp(store: Store, criteria: list[Payload], exclusions: list[Payload],
-                source_ids: list[str], strategic: bool) -> Record:
+                source_ids: list[str], strategic: bool, name: str | None = None,
+                description: str = '') -> Record:
     """Create a reviewable proposal; no campaign or budget changes here."""
     criteria, exclusions = _predicates(criteria), _predicates(exclusions)
     if not criteria or type(strategic) is not bool:
         raise GateError('invalid_icp', 'An ICP needs criteria and an explicit strategic flag.')
+    name = _name(criteria, name)
+    if not isinstance(description, str) or len(description) > 4000:
+        raise GateError('invalid_icp_description')
     with store.transaction():
         source_versions = _sources(store, source_ids)
         if not source_versions and (not strategic or any(
@@ -181,6 +200,7 @@ def propose_icp(store: Store, criteria: list[Payload], exclusions: list[Payload]
         partner_exclusions, divergences = _context(store, criteria, exclusions)
         now, id = now_utc(), 'icp-' + uuid4().hex
         data = {'criteria': criteria, 'exclusions': exclusions, 'source_ids': list(source_ids),
+                'name': name, 'description': description.strip(),
                 'source_versions': source_versions, 'strategic': strategic,
                 'partner_exclusions': partner_exclusions, 'divergences': divergences,
                 'status': 'proposed', 'created_at': now, 'approved_versions': {}}
@@ -204,6 +224,11 @@ def approve_icp(store: Store, id: str, revision: int, approved_by: str) -> Recor
         if current.data.get('status') != 'proposed':
             raise GateError('icp_not_proposed')
         data = deepcopy(current.data)
+        if 'name' in data:
+            _name(data['criteria'], data['name'])
+        if 'description' in data and (not isinstance(data['description'], str)
+                                      or len(data['description']) > 4000):
+            raise GateError('invalid_icp_description')
         _predicates(data['criteria'])
         _predicates(data['exclusions'])
         if (not data['criteria'] or type(data['strategic']) is not bool

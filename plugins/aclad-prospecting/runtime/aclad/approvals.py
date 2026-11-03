@@ -5,7 +5,7 @@ native calls made by an assistant outside the bridge.
 """
 from __future__ import annotations
 
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from hashlib import sha256
 from uuid import uuid4
 
@@ -64,13 +64,19 @@ def create_proposal(store: Store, operation: str, connection_id: str,
         raise GateError('invalid_proposal')
     if 'item_ids' in content and content['item_ids'] != item_ids:
         raise GateError('scope_mismatch')
-    proposal = Proposal(uuid4().hex, 1, operation, connection_id, list(item_ids), content,
-                        proposal_digest(operation, connection_id, item_ids, content), 'proposed')
     with store.transaction():
         bindings = [row for row in store.list('connection')
                     if row.data.get('capability', {}).get('connection_id') == connection_id
                     and row.data.get('capability', {}).get('operation') == operation]
         identity = bindings[0].data.get('account_identity') if len(bindings) == 1 else None
+        from .operation_validation import validation_context
+        validation = validation_context(store, Capability(**bindings[0].data['capability'])) if len(bindings) == 1 else None
+        if 'operation_validation' in content and content['operation_validation'] != validation:
+            raise GateError('invalid_operation_validation')
+        if validation is not None:
+            content['operation_validation'] = validation
+        proposal = Proposal(uuid4().hex, 1, operation, connection_id, list(item_ids), content,
+                            proposal_digest(operation, connection_id, item_ids, content), 'proposed')
         store.put('proposal', proposal.id, dict(asdict(proposal), connection_identity=identity), None)
         _event(store, proposal.id, 'proposal_created', {'digest': proposal.digest,
                                                        'revision': proposal.revision})
@@ -147,6 +153,15 @@ def prepare_action(store: Store, proposal_id: str, capability: Capability,
         record = store.get('proposal', proposal_id)
         proposal = _proposal(record)
         policy = operation_policy(proposal.operation)
+        from .native_requests import validate_native_request
+        validate_native_request(store, proposal)
+        if proposal.operation not in {'crm.read', 'email.read', 'calendar.read'}:
+            if store.workspace_root and not store.get('profile', 'guided-onboarding'):
+                raise GateError('setup_required', 'Retome a configuração por blocos antes de iniciar a operação.')
+            from .setup_flow import require_operational_readiness
+            require_operational_readiness(store, proposal.operation)
+        from .operation_validation import validate_campaign_operation
+        validate_campaign_operation(store, proposal)
         _validate_operation_scope(proposal.operation, proposal.payload)
         if proposal.status not in {'proposed', 'approved'}:
             raise GateError('proposal_not_executable')
@@ -155,7 +170,10 @@ def prepare_action(store: Store, proposal_id: str, capability: Capability,
         if previous:
             code = 'reconciliation_required' if previous.data['status'] == 'unknown' else 'action_already_started'
             raise GateError(code)
-        validate_capability(proposal.operation, proposal.connection_id, capability)
+        from .operation_validation import validate_attempt
+        validation_attempt = validate_attempt(store, capability, proposal.payload, len(proposal.item_ids))
+        validation_capability = replace(capability, auth='authenticated', permission='allowed', verification='verified') if validation_attempt else capability
+        validate_capability(proposal.operation, proposal.connection_id, validation_capability)
         bindings = [row for row in store.list('connection')
                     if row.data.get('capability', {}).get('connection_id') == proposal.connection_id
                     and row.data.get('capability', {}).get('operation') == proposal.operation]
@@ -166,7 +184,7 @@ def prepare_action(store: Store, proposal_id: str, capability: Capability,
             raise GateError('capability_unverified')
         if record.data.get('connection_identity') not in (None, identity):
             raise GateError('connection_mismatch')
-        needs_approval = policy['approval'] or capability.cost != 'free'
+        needs_approval = policy['approval'] or capability.cost != 'free' or validation_attempt
         environment = store.get('profile', 'environment')
         if environment and (environment.data.get('can_external_actions') is not True
                 or capability.cost != 'free' and environment.data.get('can_paid_actions') is not True):
@@ -284,6 +302,8 @@ def record_result(store: Store, result: ToolResult) -> Record:
         if action.data['status'] == 'unknown' and status != 'unknown' and result_data.get('reconciled') is not True:
             raise GateError('reconciliation_required')
         updated = store.put('action', action.id, dict(action.data, **stored), action.revision)
+        from .operation_validation import confirm_operation
+        confirm_operation(store, action, status)
         _event(store, action.id, 'action_result', stored)
         if action.data.get('lease_owner'):
             store.release_lease('action:' + action.id, action.data['lease_owner'])

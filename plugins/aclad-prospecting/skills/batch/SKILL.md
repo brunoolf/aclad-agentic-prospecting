@@ -16,11 +16,14 @@ vêm das assinaturas atuais; exemplos são sintéticos e não comprovam autoriza
 Não adivinhe campos, nomes de funções Python ou referências inexistentes. Use os
 links desta skill e [os contratos](../../references/runtime-contracts.md).
 
+Inspect `setup-status` and `campaign-context` before starting operational work.
 Resume the campaign using `../../references/session-protocol.md`. Deduplicate by reliable
 identity; ambiguous names or group domains need review. Check CRM access, ownership,
 activity and opportunities, including the seller's own eligible nurturing accounts.
 
-Show the list with existing data and the pinned ICP. Persist the seller's account
+Show the initial account table with name and website only, using the pinned ICP
+and existing source data. Discovery uses CRM/prospecting tools; no web fallback
+for companies, people or emails. Persist the seller's account
 selection before company enrichment. Explain costs/limits and use gated proposals
 for paid operations. Deep research covers only the selected scope.
 
@@ -30,3 +33,9 @@ relationships and owner → approval → apply and reconcile → plan outreach.
 Do not skip these stages or use approval of one stage for another. On partial
 failure show outcomes by item; unknown effects require reconciliation before retry.
 Every decision and next action is saved in private state, not just in this chat.
+
+After the reviewed CRM stage, create native drafts through `outreach`, show their
+links for review, obtain separate send approval and record delivery. The campaign
+keeps one fixed objective and approved ICP revision across list, selection,
+enrichment, contacts, CRM, drafts, sends, replies, follow-ups and meeting/discard.
+Do not restart the campaign merely because a different chat is opened.

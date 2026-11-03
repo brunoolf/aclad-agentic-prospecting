@@ -159,14 +159,53 @@ def prepare_probe(capability: Capability) -> Payload:
             'connection_id': capability.connection_id, 'read_only': True, 'cost': 'free'}
 
 
-def prepare_bound_probe(store: Store, capability: Capability) -> Payload:
+def prepare_bound_probe(store: Store, capability: Capability, native_input: Payload | None = None) -> Payload:
     """Prepare a CLI probe using the current inventory, never caller cost claims."""
     bindings = [row.data.get('capability', {}) for row in store.list('connection')
                 if row.data.get('capability', {}).get('connection_id') == capability.connection_id
                 and row.data.get('capability', {}).get('operation') == capability.operation]
     if len(bindings) != 1 or bindings[0] != asdict(capability):
         raise GateError('capability_unverified', 'Use the exact current discovered binding before probing.')
-    return prepare_probe(Capability(**bindings[0]))
+    intent = prepare_probe(Capability(**bindings[0]))
+    if native_input is not None:
+        arguments = payload(native_input)
+        key = 'native-probe-' + sha256(f'{capability.connection_id}\0{capability.operation}'.encode()).hexdigest()[:24]
+        with store.transaction():
+            previous = store.get('profile', key)
+            store.put('profile', key, {'type': 'native_read_probe', 'status': 'prepared',
+                'capability': bindings[0], 'native_input': arguments, 'prepared_at': now_utc()},
+                previous.revision if previous else None)
+        intent.update(native_input=arguments, probe_id=key)
+    return intent
+
+
+def consume_prepared_probe(store: Store, tool_name: str, native_input: Payload, now: str) -> bool:
+    """Permit a single exact free read check; never an operational approval."""
+    from .models import utc
+    with store.transaction():
+        matches = []
+        for row in store.list('profile'):
+            data = row.data
+            cap = data.get('capability', {})
+            if (data.get('type') != 'native_read_probe' or data.get('status') != 'prepared'
+                    or cap.get('tool_name') != tool_name or data.get('native_input') != native_input):
+                continue
+            elapsed = (utc(now) - utc(data['prepared_at'])).total_seconds()
+            if not 0 <= elapsed <= 300:
+                continue
+            current = [item for item in store.list('connection') if item.data.get('capability') == cap]
+            if len(current) != 1:
+                continue
+            try:
+                prepare_probe(Capability(**cap))
+            except (GateError, TypeError):
+                continue
+            matches.append(row)
+        if len(matches) != 1:
+            return False
+        row = matches[0]
+        store.put('profile', row.id, dict(row.data, status='dispatched', dispatched_at=now), row.revision)
+        return True
 
 
 def record_probe(store: Store, capability: Capability, response: Payload) -> Capability:
@@ -231,15 +270,89 @@ def record_probe(store: Store, capability: Capability, response: Payload) -> Cap
                 updated = replace(updated, auth='authenticated', permission='allowed', verification='verified')
             elif status >= 400:
                 updated = replace(updated, verification='failed')
-            _save(store, current.id, {**current.data, 'capability': asdict(updated),
-                'probe': {'status_code': status, 'evidence': response.get('evidence'),
-                          'account_identity': response.get('account_identity'), 'at': now_utc()}})
+            probe = {'status_code': status, 'evidence': response.get('evidence'),
+                     'account_identity': response.get('account_identity'), 'at': now_utc()}
+            if (updated.auth == 'authenticated' and updated.verification == 'verified'
+                    and capability.operation in READ_PROBES and capability.cost == 'free'
+                    and 'permissions_metadata' in response):
+                # Keep the concrete native metadata with the read evidence;
+                # a later caller cannot invent additional permission claims.
+                probe['permissions_metadata'] = payload(response['permissions_metadata'])
+            _save(store, current.id, {**current.data, 'capability': asdict(updated), 'probe': probe})
             store.record_event(Event(str(uuid4()), current.id, 'connection.probed', now_utc(),
                                      {'operation': updated.operation, 'verification': updated.verification}))
     if mismatch:
         raise GateError('connection_mismatch', 'Probe identity differs from the discovered account; verify access again.')
     return updated
 
+
+
+def verify_connection_permissions(store: Store, connection_id: str, evidence_id: str,
+                                  response: Payload) -> list[Capability]:
+    """Promote only exact permissions recorded by a free native read/identity probe.
+
+    Discovery, a catalog entry, or an authenticated sibling is not operation
+    permission evidence. No write, send or paid lookup is executed here.
+    """
+    if (not isinstance(connection_id, str) or not connection_id.strip()
+            or not isinstance(evidence_id, str) or not evidence_id.strip()):
+        raise GateError('permission_evidence_required')
+    metadata = payload(response)
+    if (set(metadata) != {'kind', 'connection_id', 'account_identity', 'permissions'}
+            or metadata['kind'] != 'native_permissions'
+            or metadata['connection_id'] != connection_id
+            or not isinstance(metadata['account_identity'], str) or not metadata['account_identity'].strip()
+            or not isinstance(metadata['permissions'], list) or not metadata['permissions']):
+        raise GateError('invalid_permission_metadata')
+    with store.transaction():
+        rows = [row for row in store.list('connection')
+                if row.data.get('capability', {}).get('connection_id') == connection_id]
+        proofs = [row for row in rows
+            if row.data.get('capability', {}).get('operation') in READ_PROBES
+            and row.data['capability'].get('visibility') == 'visible'
+            and row.data['capability'].get('auth') == 'authenticated'
+            and row.data['capability'].get('permission') == 'allowed'
+            and row.data['capability'].get('verification') == 'verified'
+            and row.data['capability'].get('cost') == 'free'
+            and row.data.get('account_identity') == metadata['account_identity']
+            and row.data.get('probe', {}).get('status_code') == 200
+            and row.data['probe'].get('evidence') == evidence_id
+            and row.data['probe'].get('permissions_metadata') == metadata]
+        if not proofs:
+            raise GateError('permission_evidence_required',
+                'Use as permissões nativas registradas com a consulta gratuita desta conta e conexão.')
+        proof, selected, seen = proofs[0], [], set()
+        for raw in metadata['permissions']:
+            permission = payload(raw)
+            if (set(permission) != {'operation', 'tool_name', 'permission'}
+                    or permission.get('permission') != 'allowed'
+                    or any(not isinstance(permission.get(field), str) or not permission[field].strip()
+                           for field in ('operation', 'tool_name'))
+                    or permission['operation'] in seen):
+                raise GateError('invalid_permission_metadata')
+            seen.add(permission['operation'])
+            matches = [row for row in rows
+                if row.data.get('capability', {}).get('operation') == permission['operation']
+                and row.data['capability'].get('tool_name') == permission['tool_name']
+                and row.data['capability'].get('visibility') == 'visible'
+                and row.data.get('native_connection_id') == proof.data.get('native_connection_id')
+                and row.data.get('provider') == proof.data.get('provider')
+                and row.data.get('account_identity') == metadata['account_identity']]
+            if len(matches) != 1:
+                raise GateError('connection_mismatch', 'Permissão nativa não corresponde à ferramenta descoberta nesta conexão.')
+            selected.append(matches[0])
+        result = []
+        for row in selected:
+            cap = replace(Capability(**row.data['capability']),
+                auth='authenticated', permission='allowed', verification='verified')
+            _save(store, row.id, {**row.data, 'capability': asdict(cap),
+                'permission_evidence': {'evidence_id': evidence_id, 'probe_id': proof.id,
+                    'metadata_digest': sha256(canonical(metadata).encode()).hexdigest(),
+                    'verified_at': now_utc()}})
+            result.append(cap)
+        store.record_event(Event(uuid4().hex, proof.id, 'connection.permissions_verified', now_utc(),
+            {'connection_id': connection_id, 'evidence_id': evidence_id, 'operations': sorted(seen)}))
+        return result
 
 def _step_id(provider: str) -> str:
     return 'connection-step-' + sha256(provider.casefold().strip().encode()).hexdigest()[:24]

@@ -107,6 +107,11 @@ def next_runs(schedule: Payload, after: str, count: int) -> list[str]:
 
 def schedule_request(store: Store, schedule: Payload, scheduler_capability: Payload) -> Payload:
     clean, capability = validate_schedule(schedule), payload(scheduler_capability)
+    if store.get('profile', 'guided-onboarding'):
+        campaigns = [store.get('campaign', identifier) for identifier in clean['scope_ids']]
+        if any(row is None or not row.data.get('icp_snapshot') for row in campaigns):
+            raise GateError('schedule_campaign_required',
+                            'Vincule as campanhas deste projeto a um ICP aprovado antes de criar a rotina.')
     environment = store.get('profile', 'environment')
     if not environment or environment.data.get('status') == 'state_unavailable':
         return {'status': 'state_unavailable', 'can_schedule': False,

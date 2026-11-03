@@ -21,12 +21,24 @@ active opportunity and contact restrictions before writing. Own nurturing can
 be eligible; another owner is not reassigned silently. Resolve the requested
 assignee to an observed CRM user, asking who should own the records.
 
+A read-only CRM is valid during setup and analysis, but it cannot execute a
+write. Verify `crm.write` separately before preparing an external change; if
+unavailable, show this stage as blocked and help obtain a permitted connection.
+Never claim local SQLite persistence means the CRM was updated. Existing CRM
+objects may satisfy confirmation only after their identity, fields, relationships
+and owner are verified through the reconciliation contract.
+
 Use crm-propose with field-by-field before/after, provenance and relationships.
 Show created/updated records, exact owner and per-item changes. The seller may
 remove items. Approval is for that version only; changing it requires new review.
 
 After approval, use crm-item-prepare for one change_id with current provider
-revision and preflight. Execute the native intent and crm-item-record the result.
+revision and preflight, plus exact native_input/field_mapping for that individual
+change. The runtime binds the child request before its scoped approval. Inspect
+the real CRM tool schema; map approved fields, owner and selected external IDs,
+never the entire batch envelope. Execute intent.payload.native_request.input with
+the exact native tool, then crm-item-record the result. A mapping/hook failure is
+a blocker; do not disable hooks/permissions or call outside the bridge.
 Apply accounts before linked contacts. Do not treat a batch as an atomic transaction.
 Show succeeded/failed/unknown outcomes separately. Timeout is not a safe retry;
 use crm-reconcile to check IDs/provider state before any repetition. Never create

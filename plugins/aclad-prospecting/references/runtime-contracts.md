@@ -102,7 +102,7 @@ Todos recebem JSON pelo adaptador; o vendedor não escreve esses objetos.
 
 | Comando | Argumentos |
 |---|---|
-| `connections-prepare-probe` | `capability` exato do binding atual persistido, inclusive custo; apenas intent gratuito, nenhum fornecedor executado |
+| `connections-prepare-probe` | capability exato do binding e native_input real; prepara permissão de leitura gratuita de uso único para PreToolUse, sem executar o fornecedor |
 | `portfolio-context` | objeto vazio; leitura de ofertas/digest sem escrita |
 | `connections-checklist` | `providers`, `catalog` |
 | `connections-step` | `provider`, `status`, `next_step`, `evidence` opcional |
@@ -200,3 +200,64 @@ Caminho de reconciliação nativa (objetos enviados pelo adaptador, não pelo ve
   evidência correspondente adota o destino e libera a entrada scheduled. Uma rotina
   sem destino válido para a pasta atual permanece bloqueada; review-start manual
   continua disponível com o mesmo histórico/lease/cursores.
+
+## Guided setup and readable workflow
+
+`setup-start` starts/resumes durable guided onboarding; `setup-status` returns its
+current blocks, capability gaps and pending automation activation. `setup-next`
+supplies the next related questions. `setup-answer` saves structured profile
+answers. `setup-block-complete` receives block_id/reviewed_by after actual review;
+the runtime rechecks prerequisites rather than trusting a caller's done flag.
+
+The seven block IDs are workspace, identity, connections, communication, automation,
+icps and campaign. CRM reading is mandatory but writing is not a setup requirement;
+external `crm.write` still needs its capability and exact approved proposal.
+Prospecting and communication connections are mandatory before operational search.
+Web discovery of companies/people/emails is not an alternative operation.
+
+`icp-catalog` lists durable named profiles and versions; `icp-propose` accepts name
+and optional description, preserving previous calls and approved snapshots.
+`campaign-context` reads one campaign's fixed objective, pinned ICP, records,
+operational stage and pending work. Local ICP/campaign Markdown projections are
+private, rebuildable views; changes to those documents are not imported as state
+or approval. `contexto/resultados.md` remains numeric only.
+
+Scheduled setup may review configuration before a campaign exists. Its outstanding
+activation remains visible until the first approved campaign is bound and the
+native scheduler confirms the exact task/destination/times through
+`schedule-record-result`. A saved preference or intent never marks setup ready.
+Unknown effects retain IDs for reconciliation and may not be repeated.
+
+## Ponte nativa e prova de permissão
+
+`connections-prepare-probe(capability, native_input)` persiste uma permissão de
+leitura gratuita com ferramenta, argumentos e geração exatos, consumida uma vez
+por PreToolUse. Depois da chamada real, `connections-record-probe` guarda a prova.
+`connections-verify-permissions(connection_id, evidence_id, response)` aceita
+somente os metadados de permissões nativos já registrados no resultado gratuito
+bem-sucedido daquela conta; não transforma catálogo ou autenticação irmã em acesso.
+
+`proposal-bind-native(proposal_id, revision, native_input, field_mapping)` vincula
+parâmetros reais à proposta antes da aprovação. O mapa usa caminhos da carga
+canônica como origem e caminhos da ferramenta como destino. O vínculo incrementa
+revision, recalcula digest e invalida aprovação prévia. Use a proposta retornada
+em `approve`; argumentos não são alterados depois. `prepare-action` conserva o
+envelope de domínio e inclui `payload.native_request.input`; este objeto é o
+argumento da chamada nativa. O envelope completo não é passado ao Outlook ou CRM.
+
+Para draft, mapear destinatários/subject/body; cc/bcc só podem estar ausentes no
+nativo quando vazios na mensagem canônica. Para envio, mapear draft_ref.object_id
+ao campo ID de draft aceito pelo provedor. Busca mapeia filtros e limits.max_items;
+enriquecimento pode usar items.<id-local>.external_ref.object_id já selecionado.
+`crm-item-prepare` aceita native_input/field_mapping para vincular a mudança filha
+antes de sua aprovação; não substituir o item aprovado por um corpo livre.
+
+Uma operação visível ainda declarada, da mesma conta autenticada, pode usar a
+primeira execução comercial aprovada com operation_validation adicionado pelo
+runtime. Mesmo gratuita, a primeira busca exige aprovação e limits.max_items
+finito. Só resultado bem-sucedido confirma a operação exata; denied/failed bloqueia.
+Metadados e propostas não autorizam envio, créditos ou escrita por herança.
+
+Mapeamento incompleto, argumento extra, mudança de identidade ou hook negado exige
+resolver o contrato/limitação. Não inventar parâmetros, copiar capability de outra
+operação, desativar hooks/permissões ou chamar o nativo fora da ponte.

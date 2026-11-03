@@ -17,9 +17,13 @@ vêm das assinaturas atuais; exemplos são sintéticos e não comprovam autoriza
 Não adivinhe campos, nomes de funções Python ou referências inexistentes. Use os
 links desta skill e [os contratos](../../references/runtime-contracts.md).
 
-Start with `../../references/session-protocol.md`, `resume`, and the campaign's IDs,
+Start with `../../references/session-protocol.md`, `resume`, `setup-status`,
+`campaign-context`, and the campaign's IDs,
 frozen ICP, selected contacts, CRM result and next action. Discover current native
-tools and verified bindings; no assumed provider, mailbox or free query.
+tools and verified bindings; no assumed provider, mailbox or free query. A visible
+operation still declared on an authenticated account may carry operation_validation;
+its first draft/send uses the normal explicit approval and result protocol, never
+an automatic probe. Denied/failed operations remain blocked.
 
 ## Plan and write
 
@@ -53,15 +57,36 @@ prevent a useful, hypothesis-led cold approach.
 
 ## Provider draft
 
+A request to prepare a prospecting email includes creating the native provider
+draft after the concrete content/scope has been reviewed and draft authorization
+recorded. Do not stop at a pasted text and wait for the seller to ask again for a
+real draft. If a prerequisite or authorization is missing, show the specific
+blocked stage and obtain it; never bypass the runtime to make a draft directly.
+
+
 Use `draft-propose` with the full message: selected account/contact, actual sender,
 TO/CC/BCC, subject, body, attachments, source IDs and plan step. Both account and
 contact must have confirmed CRM state. Unsupported attachments are blocked.
 
+Inspect the actual native draft tool schema, then call `proposal-bind-native`
+with proposal_id, revision, exact native_input and field_mapping before approval.
+For an Outlook tool accepting `to: [{email, name}]`, subject and text_content,
+map message.to→to, message.cc→cc, message.bcc→bcc, message.subject→subject and
+message.body→text_content. Include every canonical recipient list in the mapping;
+cc/bcc may be absent from native_input only when their canonical lists are empty.
+Use only the real tool's shape, not the domain message/campaign envelope.
+
 Show the full preview. The seller's request to create the presented draft can
 supply its scoped `email.create_draft` authorization; it never authorizes sending.
-Use `approve` for that proposal, `prepare-action`, execute the native tool intent,
-and `delivery-record` with normalized provider evidence. Persist the provider draft
-ID before continuing. Never perform a native write outside this bridge.
+Binding returns a new proposal revision/digest and invalidates old approval.
+Use `approve` on that returned proposal, then `prepare-action`. Execute only
+intent.payload.native_request.input as arguments to the exact native tool;
+PreToolUse checks those parameters. Record `delivery-record` with provider evidence. Persist the provider draft
+ID before continuing. Show its provider link and subject so the seller can find
+it; if no link is returned, say so and use the saved reference. Never perform a
+native write outside this bridge. A read-only CRM does not waive the account/contact
+CRM confirmation requirements for draft or send; help resolve that stage instead
+of inventing successful writes or marking CRM confirmation true.
 
 ## Send the current version
 
@@ -69,8 +94,11 @@ Fetch the provider's current draft and revision, latest replies, contact blocks,
 CRM eligibility, connected mailbox identity and confirmed CRM state. This lookup
 must cover the relevant conversation, not the seller's entire mailbox.
 
-Use `send-propose`. Show all current recipients, sender, subject, body and
-attachments; obtain explicit approval of this exact proposal ID/revision/digest.
+Use `send-propose`, inspect the actual send tool and `proposal-bind-native` before
+approval. Map draft_ref.object_id to its real draft ID argument (id/draft_id as
+exposed); do not compose or edit content in the send arguments. Use the newly
+returned proposal revision/digest. Show all current recipients, sender, subject,
+body and attachments; obtain explicit approval of this exact bound proposal.
 Editing recipients, content, sender, scope or provider revision invalidates the
 old approval. Draft creation, opening a draft or approval of another message does
 not authorize sending.
@@ -84,6 +112,9 @@ Where conditional revision is supported, the binding transmits it; otherwise
 record the remaining race between checking and sending instead of claiming an
 atomic provider guarantee.
 
+Call the native send tool with intent.payload.native_request.input, never with
+the runtime/domain envelope. A blocked mapping/hook means resolve the contract;
+never turn off hooks/permissions or invoke the tool outside the bridge.
 After native execution, use `delivery-record`. Retain sent-message/conversation
 IDs, timestamp, approved content, next action and a separate pending CRM activity
 proposal. "Sent" does not claim inbox delivery, reading or a response.

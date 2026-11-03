@@ -9,8 +9,12 @@ def refresh_local_views(store) -> None:
     try:
         from .outcome_learning import refresh_outcome_observations
         from .results import refresh_results
+        from .workflow_views import refresh_workflow_views
+        from .setup_flow import refresh_setup_view
         refresh_outcome_observations(store)
         refresh_results(store)
+        refresh_workflow_views(store)
+        refresh_setup_view(store)
     except OSError:
         raise GateError('results_report_unavailable') from None
     finally:

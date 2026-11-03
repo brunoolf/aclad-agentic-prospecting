@@ -26,7 +26,7 @@ from aclad.prospecting import (open_campaign, prepare_prospecting, record_candid
                               check_account, apply_enrichment, confirm_roles, select_contacts)
 from aclad.recovery import bootstrap, checkpoint
 from aclad.store import Store
-from tests.support import FakeBridge
+from tests.support import FakeBridge, complete_guided_workspace_setup
 
 
 NOW = '2026-10-22T12:00:00Z'
@@ -108,8 +108,10 @@ class JourneyTests(unittest.TestCase):
                 icp=approve_icp(store,icp.id,icp.revision,'seller-a')
                 open_campaign(store,'campaign-1','Nova prospecção')
                 bind_icp(store,'campaign-1',icp.id,icp.revision)
+                if workspace:
+                    complete_guided_workspace_setup(store)
 
-                search=prepare_prospecting(store,'campaign-1','accounts.search',['campaign-1'],capabilities['accounts.search'],{})
+                search=prepare_prospecting(store,'campaign-1','accounts.search',['campaign-1'],capabilities['accounts.search'],{'max_items':2})
                 accounts=[{'id':id,'name':'Synthetic '+id,'source_at':NOW,'industry':'manufacturing',
                            'external_ref':asdict(ExternalRef('demo-data','tenant-demo','data-1','external-'+id))}
                           for id in ('account-a','account-b')]

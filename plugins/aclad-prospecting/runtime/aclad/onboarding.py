@@ -32,6 +32,9 @@ QUESTIONS = [
 
 
 def next_question(store: Store) -> Payload | None:
+    if store.get('profile', 'guided-onboarding'):
+        from .setup_flow import next_guided_question
+        return next_guided_question(store)
     current = _current(store)
     progress = store.get('profile', 'onboarding')
     answered = progress.data.get('answers', {}) if progress else {}
@@ -51,6 +54,11 @@ def next_question(store: Store) -> Payload | None:
 def save_answer(store: Store, field: str, value: object) -> Record:
     if not isinstance(field, str):
         raise GateError('invalid_setup_field')
+    if field.startswith('setup.'):
+        from .setup_flow import save_guided_answer
+        return save_guided_answer(store, field, value)
+    if store.get('profile', 'guided-onboarding') and isinstance(value, str) and not value.strip():
+        raise GateError('invalid_setup_answer')
     with store.transaction():
         current = _current(store)
         special = {'import_choice', 'icp_choice'}

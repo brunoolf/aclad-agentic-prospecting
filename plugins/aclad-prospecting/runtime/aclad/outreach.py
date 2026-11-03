@@ -95,9 +95,12 @@ def _research(store: Store, account_id: str, settings: Payload) -> Payload:
 
 def _channel_available(store: Store, channel: str) -> bool:
     operation = {'email': 'email.create_draft'}.get(channel, channel + '.create_draft')
+    from .operation_validation import validation_context
+    from .models import Capability
     return any((cap := row.data.get('capability', {})).get('operation') == operation
-               and cap.get('visibility') == 'visible' and cap.get('auth') == 'authenticated'
-               and cap.get('permission') == 'allowed' and cap.get('verification') == 'verified'
+               and ((cap.get('visibility') == 'visible' and cap.get('auth') == 'authenticated'
+                     and cap.get('permission') == 'allowed' and cap.get('verification') == 'verified')
+                    or validation_context(store, Capability(**cap)) is not None)
                for row in store.list('connection'))
 
 

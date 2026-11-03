@@ -23,6 +23,15 @@ worked-account and revenue mappings. An opportunity marked won is not silently
 treated as a customer definition. Discover and test read access before analysis;
 do not enrich accounts or reveal people to fill gaps in this step.
 
+## Multiple named profiles
+
+Start with `icp-catalog` to show the names, current revisions, approval status and
+sources already saved in this seller's workspace. Reuse a selected approved ICP,
+or create another named profile without overwriting earlier ones. Ask for a
+readable name such as “Serviços financeiros — Grande São Paulo”; IDs stay internal.
+The name labels a profile, not proof of historical success. Each profile has its
+own private document under contexto/icps and the catalog index; SQLite is canonical.
+
 ## Analyze actual access
 
 Fetch the accessible CRM pages with their real filters. Record whether extraction
@@ -56,7 +65,9 @@ Ask which segment the seller wants to develop; historical patterns do not forbid
 a new strategic segment. Use reviewed partner-facing methodology where relevant.
 
 Invoke `icp-propose` with `criteria`, `exclusions`, private analysis `source_ids` and
-`strategic`. Each predicate has `field`, `operator`, `value`, `basis`:
+`strategic`, plus the confirmed `name` and optional `description`. Saving
+`icp.criteria` as an onboarding answer does not create, approve or bind an ICP.
+Each predicate has `field`, `operator`, `value`, `basis`:
 
 ```json
 {"field":"employees","operator":"gte","value":100,"basis":"hypothesis"}
@@ -93,7 +104,10 @@ Use `icp-bind` with an existing campaign ID, ICP ID and approved revision. The
 campaign stores an immutable snapshot as well as `icp_id` and `icp_revision`.
 Every downstream search/prioritization uses that snapshot, not the latest profile.
 A new proposed/approved ICP does not move existing campaigns. Create a new campaign
-when the seller chooses a changed target. Save events/checkpoint after the block.
+when the seller chooses a changed target. Recover `campaign-context` to prove the
+linkage and inspect the generated private campaign/ICP documents. A document edit
+never approves a profile or silently changes a campaign. Save events/checkpoint
+after the block, then complete the reviewed `icps` onboarding block.
 
 ## Reviewed commercial scope
 

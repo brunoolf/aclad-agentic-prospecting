@@ -16,7 +16,10 @@ vêm das assinaturas atuais; exemplos são sintéticos e não comprovam autoriza
 Não adivinhe campos, nomes de funções Python ou referências inexistentes. Use os
 links desta skill e [os contratos](../../references/runtime-contracts.md).
 
-Resume `../../references/session-protocol.md`; resolve identity and eligibility first.
+Resume `../../references/session-protocol.md` and `campaign-context`; resolve
+identity and eligibility first. The account must already be mapped through CRM or
+the prospecting provider and selected. Web research cannot discover replacement
+companies, executive candidates or email addresses.
 Company enrichment applies only to persisted selected accounts. Show scope and
 known/unknown costs, propose companies.enrich and follow the gated tool protocol.
 Use the configured sources in order, stop when enough evidence exists, and do not

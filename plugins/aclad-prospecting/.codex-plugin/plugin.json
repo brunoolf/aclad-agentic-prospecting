@@ -1,6 +1,6 @@
 {
   "name": "aclad-prospecting",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Prospecção para parceiros NetSuite com pesquisa, ICPs revisados, conexões assistidas e acompanhamento privado.",
   "author": {
     "name": "Alliances and Channels, Oracle NetSuite LATAM"
@@ -17,7 +17,7 @@
   "interface": {
     "displayName": "ACLAD Prospecting",
     "shortDescription": "Prospecção para NetSuite",
-    "longDescription": "Configure seu ambiente individual, conecte CRM e ferramentas de prospecção, pesquise sites e construa três ICPs. Selecione contas e contatos, prepare mensagens personalizadas e acompanhe respostas com histórico privado na pasta do projeto. Ofertas limitadas a NetSuite e complementos. Enriquecimento pago, escrita no CRM e envios exigem as respectivas aprovações. Conectores e agendamento dependem das capacidades verificadas do aplicativo.",
+    "longDescription": "Configure sua pasta privada em etapas, conecte CRM, prospecção e comunicação, mantenha vários ICPs revisados e conduza campanhas com pesquisa, rascunhos e acompanhamento. Oferta limitada a NetSuite e complementos. Operações pagas, gravações e envios exigem aprovação; recursos dependem das conexões verificadas no aplicativo.",
     "developerName": "Alliances and Channels, Oracle NetSuite LATAM",
     "category": "Business & Operations",
     "capabilities": [

@@ -68,7 +68,10 @@ def propose_crm(store: Store, campaign_id: str, changes: list[Payload], owner_re
 
 
 def prepare_crm_item(store: Store, proposal_id: str, change_id: str,
-                     capability: Capability, preflight: Payload, now: str):
+                     capability: Capability, preflight: Payload, now: str,
+                     native_input: Payload | None = None, field_mapping: Payload | None = None):
+    if (native_input is None) != (field_mapping is None):
+        raise GateError('native_mapping_required')
     with store.transaction():
         parent = store.get('proposal',proposal_id)
         if not parent or parent.data.get('operation') != 'crm.write' or parent.data.get('status') != 'approved':
@@ -99,10 +102,18 @@ def prepare_crm_item(store: Store, proposal_id: str, change_id: str,
                     raise GateError('account_sync_required')
                 content['account_external_ref'] = account.data['crm_external_ref']
             child = create_proposal(store,'crm.write',data['connection_id'],[change['local_id']],content)
+            if native_input is not None:
+                from .native_requests import bind_native_request
+                child = bind_native_request(store, child.id, child.revision, native_input, field_mapping)
             approve(store,child.id,child.revision,child.digest,approval['approved_by'],approval['approved_at'])
             child_id = child.id
             children[change_id] = child_id
             store.put('proposal',parent.id,dict(data,children=children),parent.revision)
+        elif native_input is not None:
+            from .native_requests import bind_native_request
+            child_record = store.get('proposal', child_id)
+            child = bind_native_request(store, child_id, child_record.data['revision'], native_input, field_mapping)
+            approve(store, child.id, child.revision, child.digest, approval['approved_by'], approval['approved_at'])
         return prepare_action(store,child_id,capability,preflight,now)
 
 

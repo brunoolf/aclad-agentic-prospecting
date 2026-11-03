@@ -11,7 +11,7 @@ if __package__ in (None, ''):
     # The verified Claude exec-form hook invokes this file, without shell/PYTHONPATH.
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from aclad.models import GateError, Payload, Scope, canonical
+from aclad.models import GateError, Payload, Scope, canonical, now_utc
 from aclad.recovery import bootstrap, checkpoint
 from aclad.store import Store
 
@@ -78,13 +78,56 @@ def handle_hook(surface: str, event: str, payload: Payload) -> Payload:
             args = payload.get('tool_input')
             if not isinstance(args, dict):
                 return _deny()
+            from aclad.connections import consume_prepared_probe
+            if consume_prepared_probe(store, name, args, now_utc()):
+                return {}
             snapshot = bootstrap(store)
             matching = [row for row in snapshot.records if row.kind == 'action'
                         and row.data.get('status') == 'in_flight'
                         and row.data.get('tool_name') == name
-                        and canonical(row.data.get('payload')) == canonical(args)]
+                        and (row.data.get('payload', {}).get('native_request') is None
+                             and canonical(row.data.get('payload')) == canonical(args)
+                             or isinstance(row.data.get('payload', {}).get('native_request'), dict)
+                             and row.data['payload']['native_request'].get('tool_name') == name
+                             and canonical(row.data['payload']['native_request'].get('input')) == canonical(args))]
             if len(matching) != 1:
                 return _deny()
+            action = matching[0]
+            if action.data.get('payload', {}).get('native_request') is not None:
+                with store.transaction():
+                    current = store.get('action', action.id)
+                    if (current is None or current.data.get('status') != 'in_flight'
+                            or current.data.get('native_dispatched_at')
+                            or current.data.get('digest') != action.data.get('digest')
+                            or current.data.get('tool_name') != name
+                            or canonical(current.data.get('payload', {}).get('native_request', {}).get('input')) != canonical(args)):
+                        return _deny()
+                    action = current
+                    from aclad.approvals import _proposal
+                    from aclad.models import Capability
+                    from aclad.native_requests import validate_native_request
+                    from aclad.operation_validation import validate_attempt
+                    from aclad.policy import validate_capability
+                    bindings = [row for row in store.list('connection')
+                        if row.data.get('capability', {}).get('connection_id') == action.data.get('connection_id')
+                        and row.data.get('capability', {}).get('operation') == action.data.get('operation')
+                        and row.data.get('capability', {}).get('tool_name') == name]
+                    if len(bindings) != 1:
+                        return _deny()
+                    cap = Capability(**bindings[0].data['capability'])
+                    if validate_attempt(store, cap, action.data['payload'], len(action.data['payload'].get('item_ids', []))):
+                        approval = action.data.get('approval', {})
+                        if (not isinstance(approval, dict) or approval.get('digest') != action.data.get('digest')
+                                or approval.get('revision') != action.data.get('proposal_revision')):
+                            return _deny()
+                    else:
+                        validate_capability(action.data['operation'], action.data['connection_id'], cap)
+                    proposal = _proposal(store.get('proposal', action.data['proposal_id']))
+                    if proposal.digest != action.data['digest']:
+                        return _deny()
+                    validate_native_request(store, proposal)
+                    store.put('action', action.id,
+                              dict(action.data, native_dispatched_at=now_utc()), action.revision)
             # No native approval grant: provider/user controls remain authoritative.
             return {}
         checkpoint(store)

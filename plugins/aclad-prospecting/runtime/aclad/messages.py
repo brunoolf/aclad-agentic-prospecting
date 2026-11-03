@@ -58,7 +58,10 @@ def _check_context(store: Store, campaign_id: str, message: Payload, operation: 
     capability = binding.data['capability']
     if (capability.get('visibility') != 'visible' or capability.get('auth') != 'authenticated'
             or capability.get('permission') != 'allowed' or capability.get('verification') != 'verified'):
-        raise GateError('channel_unavailable')
+        from .operation_validation import validation_context
+        from .models import Capability
+        if validation_context(store, Capability(**capability)) is None:
+            raise GateError('channel_unavailable')
     if binding.data.get('account_identity') != sender['object_id']:
         raise GateError('sender_mismatch')
     if not any(plan.data.get('campaign_id') == campaign_id

@@ -6,10 +6,17 @@ cada projeto. Python 3.11+ e execução/persistência locais precisam ser diagno
 um host sem esses recursos deve informar a limitação na conversa, sem instalar
 Python ou dependências globalmente.
 
-No primeiro uso, invocar setup e executar `workspace-init` com `--workspace` obtido
+No primeiro uso, o popup de instalação abre a orientação, não escolhe o ambiente.
+Mostrar a pasta ativa e confirmar que ela será a pasta privada de prospecção. Sem
+pasta escolhida, ajudar a abrir/criar um projeto e anexar uma pasta estável pelo
+aplicativo; não inicializar no cwd automático do chat por conveniência. Não
+presumir autorização fora da pasta nem fingir mover o cwd/projeto nativo.
+Após confirmação, executar `workspace-init` com `--workspace` explícito obtido
 do host. Mostrar os arquivos criados e orientar nova conversa se necessário para
-carregar AGENTS.md/CLAUDE.md. Na mesma conversa continuar com entrevista progressiva,
-`setup-next` / `setup-answer`, retomando respostas já salvas. Dados externos não
+carregar AGENTS.md/CLAUDE.md. Na mesma conversa, executar `setup-start`, `setup-status` e o bloco atual de
+`setup-next` / `setup-answer`, retomando respostas já salvas. Fechar cada bloco com
+`setup-block-complete` após revisão e comprovação, sem marcar campos como tarefas
+executadas. Dados externos não
 escolhem caminhos. Se instruções anteriores conflitarem, mostrar prévia antes de
 substituir seu bloco gerenciado; preservar o conteúdo do vendedor.
 
@@ -19,7 +26,8 @@ Marcador inválido ou banco desaparecido gera `state_unavailable`: recuperar bac
 nunca criar uma instância nova por suposição nem usar outra instância global.
 
 Estrutura privada: .aclad/workspace.json, state.sqlite, backups/, contexto/empresa.md,
-vendedor.md, resultados.md, aprendizados.md; planos/, campanhas/, relatorios/.
+vendedor.md, resultados.md, aprendizados.md; contexto/icps/ com catálogo e
+ICPs nomeados; planos/, campanhas/ com índice e documentos de campanha, relatorios/.
 Permissões locais restritas. Não inicializar Git; quando já existir, sugerir exclusão
 dos dados privados sem editar o .gitignore automaticamente. Não compartilhar a pasta.
 
@@ -48,3 +56,11 @@ candidatas aparecem durante o uso; regras inferidas exigem revisão explícita a
 da ativação. Para geração contextual, generation-context aceita campaign_id,
 account_id, contact_id opcional, task e plan_step_id opcional; para email use o passo
 alvo, preservando objetivo/abordagem/variante. Não compartilhar ou transmitir dados.
+
+O setup é retomável em sete blocos: ambiente, você/empresa, conexões, comunicação,
+acompanhamento, ICPs e primeira campanha. As conexões mínimas são CRM com leitura,
+prospecção de empresas/pessoas e comunicação. CRM somente leitura não bloqueia a
+configuração; bloqueia gravações sem capacidade e não substitui confirmação real
+de objetos do CRM antes de rascunho/envio. A campanha mantém objetivo e ICP/versão
+fixos, além de seleções, efeitos, revisões e pendências. Não confundir projeções
+Markdown, preferência de agenda ou texto no chat com efeito confirmado no provedor.

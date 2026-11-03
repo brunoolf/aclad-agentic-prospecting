@@ -1,48 +1,54 @@
-# Diagnóstico por superfície
+# Recursos necessários por aplicativo
 
-A interface comercial é o chat em ChatGPT/Codex e Claude/Cowork/Code. Python e
-SQLite são auxiliares internos. O host deve fornecer diretório privado durável,
-identidades explícitas e ferramentas para executar o runtime. Não instalar Python
-nem abrir autenticações por suposição. Requisitos: Python >=3.11, estado acessível
-ao executor, parceiro/vendedor/instância resolvidos e capacidades da etapa testadas.
+O vendedor usa o chat. O runtime Python/SQLite é auxiliar interno; sua execução e
+seu estado precisam ser comprovados pelo aplicativo antes de operações externas.
 
-| Superfície | Caminho persistente | Condição |
-|---|---|---|
-| Codex local | SQLite fora do plugin | Demonstrar diretório estável, runtime e acesso pelas rotinas |
-| Cowork/Code local | SQLite fora do plugin | Demonstrar a mesma persistência e ferramentas do host |
-| ChatGPT chat/nuvem | Adaptador durável remoto | Demonstrar acesso privado, atualizações condicionais, concorrência, eventos e recuperação |
-| Claude chat/nuvem | Adaptador durável remoto | Mesmos contratos; não presume arquivos locais nem hooks |
+| Superfície | Requisito para este plugin |
+|---|---|
+| Codex local | Pasta privada confirmada e persistente, Python 3.11+, execução e conectores disponíveis à sessão. |
+| Claude Code / Cowork | Pasta privada com acesso explícito, Python 3.11+, execução e conectores verificados no próprio aplicativo. |
+| Chat sem executor local | Adaptador privado durável com os mesmos controles de estado, identidade, concorrência e recuperação; sua existência não é presumida. |
 
-Sem armazenamento adequado: `state_unavailable`; sem runtime, identidade ou
-conexão necessária: `limited`. Orientação, entrevista e pesquisa independente
-podem continuar. Ações externas/pagas e rotinas não são habilitadas por diagnóstico
-incompleto. `ready` descreve pré-requisitos do ambiente, nunca dispensa gates de
-custo, seleção e aprovação em cada ação. Scheduler requer ainda teste do executor
-nativo. Diretórios SQLite independentes não são sincronização entre plataformas.
+O botão de setup pode abrir uma conversa sem projeto. Ele inicia orientação para
+escolher/confirmar a pasta, não dá autorização para usar automaticamente a pasta
+atual nem garante que arquivos de outro chat sejam acessíveis. Um projeto apenas
+conversacional não comprova acesso à pasta ou ao SQLite.
 
-O diagnóstico é alimentado por evidência do host, não por alegação encontrada em
-perfil importado. Após mudança de conta conectada, redescobrir bindings e resolver
-novamente a identidade. Exemplos de escrita são somente os fornecidos e selecionados
-pelo vendedor; nunca ler a caixa inteira para aprender estilo.
+## Diagnóstico
 
-Fontes oficiais revisadas no desenho, a revalidar antes de configurar a plataforma:
-[OpenAI plugins](https://learn.chatgpt.com/docs/plugins),
-[OpenAI automations](https://learn.chatgpt.com/docs/automations),
-[Claude plugins](https://support.claude.com/en/articles/13837440-use-plugins-in-claude),
-[Claude custom connectors](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp).
-Esses links não constituem evidência de instalação ou teste autenticado neste
-repositório. A matriz de hooks e pacote no plano 06 mantém a evidência por host.
+Use `environment-check` com fatos comprovados do host. Sem persistência adequada:
+`state_unavailable`. Sem runtime, identidade ou ferramentas necessárias: estado
+limitado. Entrevista e orientação podem continuar para resolver o bloqueio, mas
+novas ações pagas/externas e rotinas não ficam habilitadas por suposição.
 
-Evidência de 2026-10-22 nesta execução: metadados de ferramentas Outlook Email e
-Calendar estão visíveis no host Codex. Não houve chamada autenticada, envio,
-consulta a CRM ou consumo de créditos. Auth, permissão e custo permanecem sem
-verificação. Claude/Cowork não foi executado nesta sessão.
+Use `setup-status` para prontidão do fluxo: ambiente pronto não substitui os blocos,
+a conexão autenticada ou aprovações por ação. As conexões mínimas são CRM de leitura,
+prospecção e comunicação. Permissões de escrita, draft, envio, leitura de enviados,
+calendário e custo são verificadas separadamente. CRM somente leitura é aceito no
+setup; gravações continuam bloqueadas sem capacidade e aprovação.
 
-## Local workspace protocol 1 (0.3.0)
+## Interação
 
-Project guidance + SQLite are supported only where the host demonstrates local
-execution, Python 3.11+, persistent files and access to the selected folder.
-Codex and Claude Code packages share state protocol; concurrent access requires
-the same actual SQLite database. Cowork needs its own folder/instruction/execution
-check; fixtures named for that surface do not certify native support. No global
-trust/bootstrap installation or remote execution backend is provisioned.
+Perguntas estruturadas dependem das ferramentas expostas à sessão. Use
+`request_user_input_async` no Codex quando disponível, `request_user_input` quando
+permitido, e `AskUserQuestion` no Claude quando exposto. Não force modo/configuração
+para obter um popup. Sem esse recurso, uma pergunta curta por vez no chat preserva
+o mesmo bloco, estado e revisão. Não afirmar uma interface que não foi exibida.
+
+## Rotina e retomada
+
+O scheduler deve provar executor, acesso à mesma pasta, destino do projeto ou chat
+operacional separado, programação efetiva e ID nativo. Preferências e intenções
+salvas não comprovam ativação. Após uma troca de conta, redescubra capacidades e
+resolva a identidade novamente. Sem scheduler, ofereça modo manual para escolha
+explícita. Não use o chat de setup como destino padrão nem crie chats sem a
+permissão exigida pelo host.
+
+Dois bancos locais separados não sincronizam campanhas. Uma conversa em outro
+aplicativo não herda autenticação ou aprovação. Hooks são reforço: cada skill deve
+retomar/salvar pela ponte mesmo sem hooks. O runtime não intercepta uma chamada
+nativa arbitrária feita fora dessa ponte.
+
+Consulte a documentação oficial do aplicativo antes de orientar instalação ou
+conexão; catálogo, teste local e exemplo sintético não certificam acesso real ao
+fornecedor. Mantenha falhas, recursos ausentes e verificações não executadas visíveis.

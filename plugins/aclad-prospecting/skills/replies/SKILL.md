@@ -95,7 +95,12 @@ Leia `../../scheduled/reply-control.md`: a rotina pertence ao projeto/pasta e us
 operacional dedicado quando suportado, nunca o chat do setup por padrão. `target`
 tipado e `native_configuration` devem comprovar o mesmo destino e programação;
 registre confirmação com configuração efetiva, destino, data e próximas ocorrências.
-Sem comprovação, manter modo manual e explicar a limitação da plataforma.
+Sem comprovação, manter a ativação pendente e explicar a limitação. Oferecer modo
+manual para escolha explícita; não substituir silenciosamente agendado/combinado.
+Durante o setup, resolver essa pendência no bloco campaign antes de anunciar
+configuração concluída. Uma campanha sem envios pode ser vinculada à rotina;
+nessa situação, a conferência termina sem consultar caixas inteiras e em silêncio.
+Use apenas as conversas realmente enviadas/registradas no escopo aprovado.
 
 Quando houver calendar.read verificado, salve o resultado normalizado completo e
 use meetings-record para compromissos ligados às contas/conversas acompanhadas.

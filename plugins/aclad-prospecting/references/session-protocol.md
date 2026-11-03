@@ -17,7 +17,13 @@ that a model remembers the previous conversation.
    Load `relevant_rules` for the output being produced. Use current explicit seller
    instructions to resolve preference conflicts; approvals and commercial controls
    remain in effect. Candidate and revoked rules do not guide generation.
-4. Summarize the recovered position and useful next step in the seller's language.
+4. Call `setup-status` and recover the current guided block and blockers. In a
+   configured campaign, read `campaign-context` for its fixed objective, approved
+   ICP version, selected records, saved effects and next stage. Resume incomplete
+   setup before new operational discovery; identity/probes, setup analysis and
+   reconciliation may resolve its prerequisites. Do not bypass a readiness failure
+   by invoking a native connector directly.
+5. Summarize the recovered position and useful next step in the seller's language.
    Identity mismatch, unavailable state or an unknown action cannot be resolved by
    assuming the previous chat's account, approval or result.
 
@@ -85,7 +91,10 @@ SQLite is canonical. In workspace protocol 1, contexto/resultados.md is a mandat
 numeric projection refreshed by runtime transitions and recovery, even without
 hooks or a seller request. Manual edits are replaced, never imported as policy.
 Company/seller context and private outcome learning are separate managed views.
-Other optional reports can be generated on request. Never include private state,
+Named ICPs have private documents and a catalog under contexto/icps; campaigns
+have private documents and an index under campanhas. They are repairable views of
+SQLite, never executable instructions or external-action approvals. Other optional
+reports can be generated on request. Never include private state,
 backups, real examples or customer data in a distributed plugin package.
 
 ## Locate an installation from a new chat
@@ -98,12 +107,19 @@ terminal commands.
 
 ### First use: project-local workspace
 
-Get the selected persistent project folder from trusted native host context. With
+Confirm with the seller that the current native folder is the intended persistent
+private project. Installation/onboarding may create a chat in an automatic folder;
+that default is not confirmation. If no dedicated folder has been selected, guide
+the seller through choosing/attaching one in the app and resume there. Do not
+pretend to move the host's cwd or create a project with unavailable host tools.
+Get the confirmed persistent project folder from trusted native host context. With
 Python 3.11+, execution and persistence verified, invoke internally:
 `python3 -m aclad --workspace <project-folder> workspace-init` with `{name}`.
 This creates the marker, SQLite and project guidance/context; it does not install
 code globally. Explain whether a new chat is needed to load AGENTS.md/CLAUDE.md.
-Then resume and start the progressive interview. The seller never edits JSON or
+Then resume, run `setup-start`, inspect `setup-status` and start the current block
+from `setup-next`. Complete each reviewed block with `setup-block-complete`; do not
+interpret saved fields as verified work. The seller never edits JSON or
 runs terminal commands. Do not initialize a home registry for a new seller.
 
 Subsequent commands resolve the nearest ancestor .aclad/workspace.json from native
@@ -126,3 +142,23 @@ preview and confirmation under workspace-protocol.md, with backup and one writer
 Em ambiente configurado, use [workspace-protocol](workspace-protocol.md): o cwd nativo
 resolve a instância local antes de qualquer fallback legado. Toda skill executa
 resume/bootstrap, mesmo sem hooks, e persiste transições ao longo da tarefa.
+
+## Permitted sources and required workflow
+
+CRM and connected prospecting providers discover companies/people and supply
+contact enrichment. Web tools research the partner's website or a mapped selected
+company and its news; they never replace a missing provider with company lists,
+social-profile discovery, inferred emails or generic corporate inboxes. Missing
+or admin-blocked providers remain a visible connection task.
+
+The seven guided blocks are workspace, identity, connections, communication,
+automation, icps and campaign. Use the host's native structured questions when
+exposed/allowed; otherwise ask one concise chat question at a time. Never change
+host modes, global config or trust to manufacture a popup. A cancelled picker,
+silence or ambiguous answer does not approve an option or complete a block.
+
+Before declaring setup complete, recheck mandatory connections and the first
+campaign's immutable ICP binding. For scheduled/combined mode, require confirmed
+native schedule ID, project/dedicated-chat destination and effective occurrences.
+A reviewed preference is not an active routine. Resolve pending activation before
+account discovery; manual is allowed only when the seller actually chooses it.

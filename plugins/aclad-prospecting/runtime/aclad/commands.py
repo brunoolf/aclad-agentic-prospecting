@@ -6,6 +6,14 @@ from .models import Capability, ExternalRef, GateError, ToolResult, now_utc
 
 # module, function, consumes Store. CLI names never select arbitrary code.
 COMMANDS = {
+ 'proposal-bind-native':('native_requests','bind_native_request',True),
+ 'connections-verify-permissions':('connections','verify_connection_permissions',True),
+ 'setup-start':('setup_flow','start_setup',True),
+ 'setup-status':('setup_flow','setup_status',True),
+ 'setup-block-complete':('setup_flow','complete_block',True),
+ 'icp-catalog':('workflow_views','icp_catalog',True),
+ 'icp-list':('workflow_views','icp_catalog',True),
+ 'campaign-context':('workflow_views','campaign_context',True),
  'connections-checklist':('connections','connection_checklist',True),
  'connections-prepare-probe':('connections','prepare_bound_probe',True),
  'portfolio-context':('portfolio','portfolio_context',True),
@@ -77,13 +85,24 @@ COMMANDS = {
 
 def dispatch(store, command, data):
     from .recovery import bootstrap, checkpoint
+    if command in {'setup-status', 'setup-next'} and store.workspace_root:
+        from .setup_flow import start_setup
+        start_setup(store)
     if command == 'status':
         from .results import results_report_status
         from .recovery import context_snapshot
         with store.transaction():
-            return {**asdict(context_snapshot(store)), 'results_report': results_report_status(store)}
+            result = {**asdict(context_snapshot(store)), 'results_report': results_report_status(store)}
+            if store.get('profile', 'guided-onboarding'):
+                from .setup_flow import setup_status
+                result['setup'] = setup_status(store)
+            return result
     if command == 'resume':
-        return bootstrap(store)
+        snapshot = bootstrap(store)
+        if store.get('profile', 'guided-onboarding'):
+            from .setup_flow import setup_status
+            return {**asdict(snapshot), 'setup': setup_status(store)}
+        return snapshot
     if command == 'checkpoint':
         return checkpoint(store)
     if command not in {'portfolio-context','connections-prepare-probe','outcome-context','review-start','review-apply','review-finish','record-result','delivery-record','delivery-reconcile','crm-item-record','crm-reconcile','meetings-record'}:

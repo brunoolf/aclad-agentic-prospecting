@@ -35,7 +35,7 @@ class OutcomeFixture(TestCase):
         self.scope = scope
         self.store = Store(self.directory, scope)
         self.addCleanup(lambda: self.store.close())
-        self.store.put('campaign', 'campaign', {'icp_id': 'icp', 'icp_revision': 1}, None)
+        self.store.put('campaign', 'campaign', {'objective': 'Gerar reuniões'} if self.workspace else {'icp_id': 'icp', 'icp_revision': 1}, None)
         self.sender = ExternalRef('mail', 'tenant', 'mail', 'seller@example.com')
         for operation in ('email.send', 'email.create_draft'):
             cap = Capability(operation, operation, 'mail', 'visible', 'authenticated', 'allowed', 'verified', 'free')
@@ -52,12 +52,20 @@ class OutcomeFixture(TestCase):
                        'learning_context': {'objective': 'Meeting', 'approach': 'Inventory',
                                             'variant': 'question', 'source_ids': []}}
                       for account in ('a', 'b') for index in (0, 1)]}, None)
+        if self.workspace:
+            from tests.support import complete_guided_workspace_setup
+            complete_guided_workspace_setup(self.store)
+            from aclad.icps import bind_icp
+            icp = next(row for row in self.store.list('icp') if row.data.get('status') == 'active')
+            bind_icp(self.store, 'campaign', icp.id, icp.data['approved_revision'])
 
     def send(self, account='a', index=0, edited_body='Reviewed sent body', with_context=False, defer_result=False, sent_at=NOW):
         message = {'account_id': account, 'contact_id': 'contact-' + account,
             'sender_ref': asdict(self.sender), 'to': ['buyer@example.com'], 'cc': [], 'bcc': [],
             'subject': 'Inventory', 'body': 'Draft body', 'attachments': [], 'source_ids': [],
             'plan_step_id': 'step-' + account + '-' + str(index)}
+        if self.workspace:
+            message['offering_ids'] = ['fixture-netsuite']
         if with_context:
             message['learning_context'] = next(step['learning_context'] for step in
                 self.store.get('outreach_plan', 'plan').data['steps'] if step['id'] == message['plan_step_id'])
